@@ -5,4 +5,4 @@ from docquestapp.models import *
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
-        fields = []
+        fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname']
