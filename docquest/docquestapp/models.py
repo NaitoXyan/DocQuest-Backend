@@ -12,7 +12,7 @@ class CustomUser(AbstractBaseUser):
     USERNAME_FIELD = "email"
 
 class Roles(models.Model):
-    userID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    userID = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
     projectLead = models.BooleanField(default=False)
     programChair = models.BooleanField(default=False)
     collegeDean = models.BooleanField(default=False)
