@@ -1,20 +1,18 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser
 
-class User(AbstractUser):
+class CustomUser(AbstractBaseUser):
     userID = models.AutoField(primary_key=True)
-    email = models.CharField(max_length=150)
+    email = models.CharField(max_length=150, unique=True)
     password = models.CharField(max_length=150)
     firstname = models.CharField(max_length=150)
     middlename = models.CharField(max_length=150)
     lastname = models.CharField(max_length=150)
 
+    USERNAME_FIELD = "email"
+
 class Roles(models.Model):
-<<<<<<< Updated upstream
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
-=======
     userID = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
->>>>>>> Stashed changes
     projectLead = models.BooleanField(default=False)
     programChair = models.BooleanField(default=False)
     collegeDean = models.BooleanField(default=False)

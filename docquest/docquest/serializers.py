@@ -1,13 +1,8 @@
 from rest_framework import serializers
 from docquestapp.models import *
-# from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
-<<<<<<< Updated upstream
-        model = User
-        fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname']
-=======
         model = CustomUser
         fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname']
 
@@ -25,4 +20,3 @@ class ProjectSerializer(serializers.ModelSerializer):
             'agencyID', 'targetImplementation', 'totalHours', 'background', 'projectComponent',
             'beneficiaries', 'totalBudget', 'moaID'
         ]
->>>>>>> Stashed changes

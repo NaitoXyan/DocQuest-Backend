@@ -6,14 +6,11 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-<<<<<<< Updated upstream
-=======
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
->>>>>>> Stashed changes
 User = get_user_model()
 
 @api_view(['POST'])
