@@ -20,3 +20,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             'agencyID', 'targetImplementation', 'totalHours', 'background', 'projectComponent',
             'beneficiaries', 'totalBudget', 'moaID'
         ]
+
+
+
