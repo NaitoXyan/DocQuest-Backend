@@ -10,7 +10,11 @@ class User(AbstractUser):
     lastname = models.CharField(max_length=150)
 
 class Roles(models.Model):
+<<<<<<< Updated upstream
     userID = models.ForeignKey(User, on_delete=models.CASCADE)
+=======
+    userID = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
+>>>>>>> Stashed changes
     projectLead = models.BooleanField(default=False)
     programChair = models.BooleanField(default=False)
     collegeDean = models.BooleanField(default=False)
