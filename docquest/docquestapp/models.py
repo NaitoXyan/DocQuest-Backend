@@ -79,12 +79,12 @@ class Project(models.Model):
 
 class Signatories(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    userID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     approvalStatus = models.BooleanField(default=False)
 
 class Proponents(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    userID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 class TargetGroup(models.Model):
     targetGroupID = models.AutoField(primary_key=True)
@@ -98,7 +98,7 @@ class GoalsAndObjectives(models.Model):
 
 class LoadingOfTrainers(models.Model):
     LOTID = models.AutoField(primary_key=True)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    userID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     trainingLoad = models.CharField(max_length=300)
     hours = models.FloatField()
     ustpBudget = models.IntegerField()
@@ -111,7 +111,7 @@ class ProjectActivities(models.Model):
     objective = models.TextField()
     involved = models.TextField()
     targetDate = models.DateField()
-    personResponsibleID = models.ForeignKey(User, on_delete=models.CASCADE)
+    personResponsibleID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 class BudgetRequirementsItems(models.Model):
