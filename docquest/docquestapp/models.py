@@ -37,9 +37,9 @@ class PartnerAgency(models.Model):
 
 class MOA(models.Model):
     moaID = models.AutoField(primary_key=True)
-    partyADescription = models.CharField()
-    partyBDescription = models.CharField()
-    termination = models.CharField()
+    partyADescription = models.TextField()
+    partyBDescription = models.TextField()
+    termination = models.TextField()
 
 class Witnesseth(models.Model):
     witnessethID = models.AutoField(primary_key=True)
