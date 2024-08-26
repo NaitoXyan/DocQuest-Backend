@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'docquest.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('postgresql://postgres:HQpoqtWGqWhfLsVlGNCGLEbpVhBIRvSU@junction.proxy.rlwy.net:39692/railway')
+        default=os.environ.get('DATABASE_URL', 'postgresql://postgres:HQpoqtWGqWhfLsVlGNCGLEbpVhBIRvSU@junction.proxy.rlwy.net:39692/railway')
     )
 }
 
