@@ -127,7 +127,7 @@ class EvaluationAndMonitoring(models.Model):
     projectSummary = models.TextField()
     indicators = models.TextField()
     meansOfVerification = models.TextField()
-    RisksAssumptions = models.TextField()
+    risksAssumptions = models.TextField()
     type = models.CharField(max_length=100)
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
 
