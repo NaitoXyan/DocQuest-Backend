@@ -58,6 +58,71 @@ def roles(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def create_project(request):
+
+    address_data = {
+        'addressID' : request.data.get('addressID'),
+        'street' : request.data.get('street'),
+        'barangay' : request.data.get('barangay'),
+        'city' : request.data.get('city'),
+        'province' : request.data.get('province'),
+        'postalCode' : request.data.get('postalCode')
+    }
+
+    agency_data = {
+        'agencyID': request.data.get('agencyID'),
+        'agencyName' : request.data.get('agencyName'),
+        'addressID' : request.data.get('addressID')
+    }
+
+    project_data = {
+        'projectID' : request.data.get('projectID'),
+        'programCategory' : request.data.get('programCategory'),
+        'projectTitle' : request.data.get('projectTitle'),
+        'projectType' : request.data.get('projectType'),
+        'projectCategory' : request.data.get('projectCategory'),
+        'researchTitle': request.data.get('researchTitle'),
+        'program' : request.data.get('program'),
+        'accreditationLevel' : request.data.get('accreditationLevel'),
+        'college' : request.data.get('college'),
+        'projectLocationID': request.data.get('projectLocationID'),
+        'agencyID' : request.data.get('agencyID'),
+        'targetImplementation' : request.data.get('targetImplementation'),
+        'totalHours' : request.data.get('totalHours'),
+        'background' : request.data.get('background'),
+        'projectComponent' : request.data.get('projectComponent'),
+        'beneficiaries' : request.data.get('beneficiaries'),
+        'totalBudget' : request.data.get('totalBudget'),
+        'moaID' : request.data.get('moaID') #leave it sa?
+    }
+
+    target_group_data = {
+        'targetGroupID' : request.data.get('targetGroupID'),
+        'targetGroup' : request.data.get('targetGroup'),
+        'projectID' : request.data.get('projectID')
+    }
+
+    goals_and_objectives_data = {
+        'GAOID' : request.data.get('GAOID'), 
+        'goalsAndObjectives' : request.data.get('goalsAndObjectives'), 
+        'projectID' : request.data.get('projectID')
+    }
+
+    monitoring_plan_and_schedule_data = {
+        'MPASID' : request.data.get('MPASID'), 
+        'approach' : request.data.get('approach'), 
+        'dataGatheringStrategy' : request.data.get('dataGatheringStrategy'), 
+        'schedule' : request.data.get('schedule'), 
+        'implementationPhase' : request.data.get('implementationPhase'),
+        'projectID' : request.data.get('projectID')
+    }
+
+    # project_serializer = ProjectSerializer(data=project_data)
+    # if project_serializer.is_valid():
+
+    # return Response()
+
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
