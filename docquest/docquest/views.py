@@ -31,7 +31,28 @@ def signup(request):
         user.set_password(request.data['password'])
         user.save()
         token = Token.objects.create(user=user)
-        return Response({"token": token.key, "user": serializer.data})
+
+        # Assign user's role
+        role_data = {
+            "userID": user.userID,  # Set userID to the new user's ID
+            "projectLead": request.data.get("projectLead", False),
+            "programChair": request.data.get("programChair", False),
+            "collegeDean": request.data.get("collegeDean", False),
+            "ECRDirector": request.data.get("ECRDirector", False),
+            "VCAA": request.data.get("VCAA", False),
+            "VCRI": request.data.get("VCRI", False),
+            "accountant": request.data.get("accountant", False),
+            "chancellor": request.data.get("chancellor", False)
+        }
+
+        role_serializer = RoleSerializer(data=role_data)
+        if role_serializer.is_valid():
+            role_serializer.save()
+            return Response({"token": token.key, "user": serializer.data,
+                            "message": "User created and role assigned",
+                            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response(role_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
