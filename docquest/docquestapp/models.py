@@ -3,11 +3,15 @@ from django.contrib.auth.models import AbstractBaseUser
 
 class CustomUser(AbstractBaseUser):
     userID = models.AutoField(primary_key=True)
-    email = models.CharField(max_length=150, unique=True)
-    password = models.CharField(max_length=150)
-    firstname = models.CharField(max_length=150)
-    middlename = models.CharField(max_length=150)
-    lastname = models.CharField(max_length=150)
+    email = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=100)
+    firstname = models.CharField(max_length=50)
+    middlename = models.CharField(max_length=50)
+    lastname = models.CharField(max_length=50)
+    campus = models.CharField(max_length=50, default="NO CAMPUS SELECTED")
+    college = models.CharField(max_length=50, default="NO COLLEGE SELECTED")
+    department = models.CharField(max_length=50, default="NO DEPARTMENT SELECTED")
+    contactNumber = models.CharField(max_length=15, default="NO NUMBER")
 
     USERNAME_FIELD = "email"
 
