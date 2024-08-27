@@ -8,8 +8,9 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/signup
 Content-Type: application/json
 
-{ "email": "chalbert@gmail.com", "password": "testpass", "firstname": "Chalbert", "middlename": "Akut",
-    "lastname": "Reyes", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789"
+{ "email": "guylord1@gmail.com", "password": "testpass", "firstname": "Guylord", "middlename": "Sebastian?",
+    "lastname": "Sagun", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
+    "projectLead": true
 }
 
 ###
@@ -17,7 +18,7 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/roles
 Content-Type: application/json
 
-{ "userID": 2, "projectLead": false }
+{ "userID": 1, "projectLead": true }
 
 ###
 
