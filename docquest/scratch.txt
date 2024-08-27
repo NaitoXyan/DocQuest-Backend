@@ -1,0 +1,189 @@
+address_data = {
+        'street' : request.data.get('street'),
+        'barangay' : request.data.get('barangay'),
+        'city' : request.data.get('city'),
+        'province' : request.data.get('province'),
+        'postalCode' : request.data.get('postalCode')
+    }
+
+    agency_data = {
+        'agencyName' : request.data.get('agencyName'),
+        'addressID' : request.data.get('addressID')
+    }
+
+    project_data = {
+        'programCategory' : request.data.get('programCategory'),
+        'projectTitle' : request.data.get('projectTitle'),
+        'projectType' : request.data.get('projectType'),
+        'projectCategory' : request.data.get('projectCategory'),
+        'researchTitle': request.data.get('researchTitle'),
+        'program' : request.data.get('program'),
+        'accreditationLevel' : request.data.get('accreditationLevel'),
+        'college' : request.data.get('college'),
+        'projectLocationID': request.data.get('projectLocationID'),
+        'agencyID' : request.data.get('agencyID'),
+        'targetImplementation' : request.data.get('targetImplementation'),
+        'totalHours' : request.data.get('totalHours'),
+        'background' : request.data.get('background'),
+        'projectComponent' : request.data.get('projectComponent'),
+        'beneficiaries' : request.data.get('beneficiaries'),
+        'totalBudget' : request.data.get('totalBudget'),
+        'moaID' : request.data.get('moaID')
+    }
+
+    target_group_data = {
+        'targetGroup' : request.data.get('targetGroup'),
+        'projectID' : request.data.get('projectID')
+    }
+
+    goals_and_objectives_data = {
+        'goalsAndObjectives' : request.data.get('goalsAndObjectives'), 
+        'projectID' : request.data.get('projectID')
+    }
+
+    monitoring_plan_and_schedule_data = {
+        'approach' : request.data.get('approach'), 
+        'dataGatheringStrategy' : request.data.get('dataGatheringStrategy'), 
+        'schedule' : request.data.get('schedule'), 
+        'implementationPhase' : request.data.get('implementationPhase'),
+        'projectID' : request.data.get('projectID')
+    }
+
+    eval_and_monitoring_data = {
+        'projectSummary' : request.data.get('projectSummary'),
+        'indicators' : request.data.get('indicators'),
+        'meansOfVerification' : request.data.get('meansOfVerification'),
+        'risksAssumptions' : request.data.get('risksAssumptions'),
+        'type' : request.data.get('type'),
+        'projectID' : request.data.get('projectID')
+    }
+
+    budget_requirements_data = {
+        'itemName': request.data.get('itemName'),
+        'ustpAmount': request.data.get('ustpAmount'),
+        'partnerAmount': request.data.get('partnerAmount'),
+        'totalAmount': request.data.get('totalAmount'),
+        'projectID': request.data.get('projectID')
+    }
+
+    project_activities_data = {
+        'objective': request.data.get('objective'),
+        'involved': request.data.get('involved'),
+        'targetDate': request.data.get('targetDate'),
+        'personResponsibleID': request.data.get('personResponsibleID'),
+        'projectID': request.data.get('projectID')
+    }
+    
+    loading_of_trainers_data = {
+        'userID': request.data.get('userID'),
+        'trainingLoad': request.data.get('trainingLoad'),
+        'hours': request.data.get('hours'),
+        'ustpBudget': request.data.get('ustpBudget'),
+        'agencyBudget': request.data.get('agencyBudget'),
+        'totalBudgetRequirement': request.data.get('totalBudgetRequirement'),
+        'projectID': request.data.get('projectID')
+    }
+
+    signatories_data = {
+        'projectID' : request.data.get('projectID'),
+        'userID' : request.data.get('userID'),
+        'approvalStatus': request.data.get('approvalStatus')
+    }
+
+    proponents_data = {
+        'projectID' : request.data.get('projectID'),
+        'userID' : request.data.get('userID')
+    }
+
+    # example JSON format for create_project
+{
+  "agencyAddress": {
+    "street": "123 Main St",
+    "city": "Metropolis",
+    "state": "MA",
+    "zipcode": "02139"
+  },
+  "projectAddress": {
+    "street": "456 Elm St",
+    "city": "Springfield",
+    "state": "IL",
+    "zipcode": "62701"
+  },
+  "agency": {
+    "name": "Super Agency",
+    "contactPerson": "John Doe",
+    "contactEmail": "john.doe@agency.com"
+  },
+  "project": {
+    "name": "Community Development Project",
+    "description": "A project aimed at improving local community resources.",
+    "startDate": "2024-09-01",
+    "endDate": "2024-12-31"
+  },
+  "proponents": {
+    "name": "Jane Smith",
+    "role": "Project Manager"
+  },
+  "goalsAndObjectives": [
+    {
+      "objective": "Improve local park facilities.",
+      "goal": "Upgrade all equipment to be safer and more accessible."
+    },
+    {
+      "objective": "Increase community engagement.",
+      "goal": "Host weekly events at the park to involve community members."
+    }
+  ],
+  "projectActivities": [
+    {
+      "activityName": "Park Cleanup",
+      "description": "Organize a volunteer event to clean up the local park."
+    },
+    {
+      "activityName": "Equipment Installation",
+      "description": "Install new playground equipment."
+    }
+  ],
+  "budgetRequirements": [
+    {
+      "item": "Playground Equipment",
+      "cost": 5000,
+      "quantity": 1
+    },
+    {
+      "item": "Event Supplies",
+      "cost": 200,
+      "quantity": 5
+    }
+  ],
+  "evalAndMonitoring": [
+    {
+      "evaluationCriteria": "Completion of Equipment Installation",
+      "monitoringMethod": "Site Visits"
+    }
+  ],
+  "monitoringPlanAndSchedule": [
+    {
+      "activity": "Monthly Review Meeting",
+      "schedule": "2024-09-15"
+    }
+  ],
+  "targetGroup": [
+    {
+      "groupName": "Local Residents",
+      "description": "People living within a 5-mile radius of the park."
+    }
+  ],
+  "loadingOfTrainers": [
+    {
+      "trainerName": "Alex Johnson",
+      "sessions": 4
+    }
+  ],
+  "signatories": [
+    {
+      "signatoryName": "Dr. Emily Carter",
+      "position": "Director"
+    }
+  ]
+}

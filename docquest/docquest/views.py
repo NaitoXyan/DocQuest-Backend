@@ -61,67 +61,131 @@ def roles(request):
 @api_view(['POST'])
 def create_project(request):
 
-    address_data = {
-        'addressID' : request.data.get('addressID'),
-        'street' : request.data.get('street'),
-        'barangay' : request.data.get('barangay'),
-        'city' : request.data.get('city'),
-        'province' : request.data.get('province'),
-        'postalCode' : request.data.get('postalCode')
-    }
+    agency_address_data = request.data.get('agencyAddress', {})
+    project_address_data = request.data.get('projectAddress', {})
+    agency_data = request.data.get('agency', {})
+    project_data = request.data.get('project', {})
+    proponents_data = request.data.get('proponents', {})
 
-    agency_data = {
-        'agencyID': request.data.get('agencyID'),
-        'agencyName' : request.data.get('agencyName'),
-        'addressID' : request.data.get('addressID')
-    }
+    # Extract lists for multiple entries
+    goals_and_objectives_list = request.data.get('goalsAndObjectives', [])
+    project_activities_list = request.data.get('projectActivities', [])
+    budget_requirements_list = request.data.get('budgetRequirements', [])
+    eval_and_monitoring_list = request.data.get('evalAndMonitoring', [])
+    monitoring_plan_and_schedule_list = request.data.get('monitoringPlanAndSchedule', [])
+    target_group_list = request.data.get('targetGroup', [])
+    loading_of_trainers_list = request.data.get('loadingOfTrainers', [])
+    signatories_list = request.data.get('signatories', [])
 
-    project_data = {
-        'projectID' : request.data.get('projectID'),
-        'programCategory' : request.data.get('programCategory'),
-        'projectTitle' : request.data.get('projectTitle'),
-        'projectType' : request.data.get('projectType'),
-        'projectCategory' : request.data.get('projectCategory'),
-        'researchTitle': request.data.get('researchTitle'),
-        'program' : request.data.get('program'),
-        'accreditationLevel' : request.data.get('accreditationLevel'),
-        'college' : request.data.get('college'),
-        'projectLocationID': request.data.get('projectLocationID'),
-        'agencyID' : request.data.get('agencyID'),
-        'targetImplementation' : request.data.get('targetImplementation'),
-        'totalHours' : request.data.get('totalHours'),
-        'background' : request.data.get('background'),
-        'projectComponent' : request.data.get('projectComponent'),
-        'beneficiaries' : request.data.get('beneficiaries'),
-        'totalBudget' : request.data.get('totalBudget'),
-        'moaID' : request.data.get('moaID') #leave it sa?
-    }
+    # Create or update the Agency Address
+    agency_address_serializer = AddressSerializer(data=agency_address_data)
+    if agency_address_serializer.is_valid():
+        agency_address = agency_address_serializer.save()
+    else:
+        return Response(agency_address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    target_group_data = {
-        'targetGroupID' : request.data.get('targetGroupID'),
-        'targetGroup' : request.data.get('targetGroup'),
-        'projectID' : request.data.get('projectID')
-    }
+    # Create or update the Project Address
+    project_address_serializer = AddressSerializer(data=project_address_data)
+    if project_address_serializer.is_valid():
+        project_address = project_address_serializer.save()
+    else:
+        return Response(project_address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    goals_and_objectives_data = {
-        'GAOID' : request.data.get('GAOID'), 
-        'goalsAndObjectives' : request.data.get('goalsAndObjectives'), 
-        'projectID' : request.data.get('projectID')
-    }
+    # Create or update the Agency
+    agency_serializer = PartnerAgencySerializer(data={**agency_data, 'addressID': agency_address.id})
+    if agency_serializer.is_valid():
+        agency = agency_serializer.save()
+    else:
+        return Response(agency_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    monitoring_plan_and_schedule_data = {
-        'MPASID' : request.data.get('MPASID'), 
-        'approach' : request.data.get('approach'), 
-        'dataGatheringStrategy' : request.data.get('dataGatheringStrategy'), 
-        'schedule' : request.data.get('schedule'), 
-        'implementationPhase' : request.data.get('implementationPhase'),
-        'projectID' : request.data.get('projectID')
-    }
+    # Create or update the Project
+    project_serializer = ProjectSerializer(data={**project_data, 'projectLocationID': project_address.id, 'agencyID': agency.id})
+    if project_serializer.is_valid():
+        project = project_serializer.save()
+    else:
+        return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Create Proponents
+    proponents_serializer = ProponentsSerializer(data={**proponents_data, 'projectID': project.id})
+    if proponents_serializer.is_valid():
+        proponent = proponents_serializer.save()
+    else:
+        return Response(proponents_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Create multiple Goals and Objectives
+    for data in goals_and_objectives_list:
+        data['projectID'] = project.id
+        goals_and_objectives_serializer = GoalsAndObjectivesSerializer(data=data)
+        if goals_and_objectives_serializer.is_valid():
+            goals_and_objectives_serializer.save()
+        else:
+            return Response(goals_and_objectives_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # project_serializer = ProjectSerializer(data=project_data)
-    # if project_serializer.is_valid():
+    # Create multiple Project Activities
+    for data in project_activities_list:
+        data['projectID'] = project.id
+        project_activities_serializer = ProjectActivitiesSerializer(data=data)
+        if project_activities_serializer.is_valid():
+            project_activities_serializer.save()
+        else:
+            return Response(project_activities_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # return Response()
+    # Create multiple Budget Requirements
+    for data in budget_requirements_list:
+        data['projectID'] = project.id
+        budget_requirements_serializer = BudgetaryRequirementsItemsSerializer(data=data)
+        if budget_requirements_serializer.is_valid():
+            budget_requirements_serializer.save()
+        else:
+            return Response(budget_requirements_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create multiple Eval and Monitoring entries
+    for data in eval_and_monitoring_list:
+        data['projectID'] = project.id
+        eval_and_monitoring_serializer = EvaluationAndMonitoringSerializer(data=data)
+        if eval_and_monitoring_serializer.is_valid():
+            eval_and_monitoring_serializer.save()
+        else:
+            return Response(eval_and_monitoring_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create multiple Monitoring Plan and Schedule entries
+    for data in monitoring_plan_and_schedule_list:
+        data['projectID'] = project.id
+        monitoring_plan_and_schedule_serializer = MonitoringPlanAndScheduleSerializer(data=data)
+        if monitoring_plan_and_schedule_serializer.is_valid():
+            monitoring_plan_and_schedule_serializer.save()
+        else:
+            return Response(monitoring_plan_and_schedule_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Create multiple target group
+    for data in target_group_list:
+        data['projectID'] = project.id
+        target_group_serializer = TargetGroupSerializer(data=data)
+        if target_group_serializer.is_valid():
+            target_group_serializer.save()
+        else:
+             return Response(target_group_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Create multiple Loading of Trainers entries
+    for data in loading_of_trainers_list:
+        data['projectID'] = project.id
+        loading_of_trainers_serializer = LoadingOfTrainersSerializer(data=data)
+        if loading_of_trainers_serializer.is_valid():
+            loading_of_trainers_serializer.save()
+        else:
+            return Response(loading_of_trainers_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create multiple Signatories
+    for data in signatories_list:
+        data['projectID'] = project.id
+        signatories_serializer = SignatoriesSerializer(data=data)
+        if signatories_serializer.is_valid():
+            signatories_serializer.save()
+        else:
+            return Response(signatories_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({"message": "Project and related data created successfully."}, status=status.HTTP_201_CREATED)
+
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
