@@ -63,23 +63,23 @@ class Effectivity(models.Model):
 
 class Project(models.Model):
     projectID = models.AutoField(primary_key=True)
-    programCategory = models.CharField(max_length=150)
+    programCategory = models.CharField(max_length=50)
     projectTitle = models.CharField(max_length=150)
-    projectType = models.CharField(max_length=150)
-    projectCategory = models.CharField(max_length=150)
+    projectType = models.CharField(max_length=50)
+    projectCategory = models.CharField(max_length=100)
     researchTitle = models.CharField(max_length=150)
     program = models.CharField(max_length=150)
-    accreditationLevel = models.CharField(max_length=150)
-    college = models.CharField(max_length=150)
+    accreditationLevel = models.CharField(max_length=50)
+    college = models.CharField(max_length=50)
     projectLocationID = models.ForeignKey(Address, on_delete=models.CASCADE) 
     agencyID = models.ForeignKey(PartnerAgency, on_delete=models.CASCADE)
     targetImplementation = models.DateField()
     totalHours = models.FloatField()
-    background = models.CharField(max_length=150)
-    projectComponent = models.CharField(max_length=150)
-    beneficiaries = models.CharField(max_length=150)
+    background = models.TextField()
+    projectComponent = models.TextField()
+    beneficiaries = models.TextField()
     totalBudget = models.IntegerField()
-    moaID = models.ForeignKey(MOA, on_delete=models.CASCADE)
+    moaID = models.ForeignKey(MOA, on_delete=models.CASCADE,  null=True, blank=True)
 
 class Signatories(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -92,18 +92,18 @@ class Proponents(models.Model):
 
 class TargetGroup(models.Model):
     targetGroupID = models.AutoField(primary_key=True)
-    targetGroup = models.CharField()
+    targetGroup = models.CharField(max_length=200)
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 class GoalsAndObjectives(models.Model):
-    GOAID = models.AutoField(primary_key=True)
+    GAOID = models.AutoField(primary_key=True)
     goalsAndObjectives = models.TextField()
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 class LoadingOfTrainers(models.Model):
     LOTID = models.AutoField(primary_key=True)
     userID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    trainingLoad = models.CharField(max_length=300)
+    trainingLoad = models.TextField()
     hours = models.FloatField()
     ustpBudget = models.IntegerField()
     agencyBudget = models.IntegerField()
@@ -120,7 +120,7 @@ class ProjectActivities(models.Model):
 
 class BudgetRequirementsItems(models.Model):
     itemID = models.AutoField(primary_key=True)
-    itemName = models.CharField(max_length=150)
+    itemName = models.CharField(max_length=50)
     ustpAmount = models.IntegerField()
     partnerAmount = models.IntegerField()
     totalAmount = models.IntegerField()

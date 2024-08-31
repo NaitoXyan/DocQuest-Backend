@@ -77,7 +77,7 @@ class ProponentsSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Address
-        fields = ['addressID', 'street', 'barangay', 'city', 'province', 'postalCode']
+        fields = ['addressID', 'street', 'barangay', 'city', 'province', 'postal_code']
 
 class PartnerAgencySerializer(serializers.ModelSerializer):
     class Meta(object):

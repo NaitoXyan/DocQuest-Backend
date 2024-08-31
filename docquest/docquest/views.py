@@ -113,21 +113,21 @@ def create_project(request):
         return Response(project_address_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Create or update the Agency
-    agency_serializer = PartnerAgencySerializer(data={**agency_data, 'addressID': agency_address.id})
+    agency_serializer = PartnerAgencySerializer(data={**agency_data, 'addressID': agency_address.addressID})
     if agency_serializer.is_valid():
         agency = agency_serializer.save()
     else:
         return Response(agency_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # Create or update the Project
-    project_serializer = ProjectSerializer(data={**project_data, 'projectLocationID': project_address.id, 'agencyID': agency.id})
+    project_serializer = ProjectSerializer(data={**project_data, 'projectLocationID': project_address.addressID, 'agencyID': agency.agencyID})
     if project_serializer.is_valid():
         project = project_serializer.save()
     else:
         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # Create Proponents
-    proponents_serializer = ProponentsSerializer(data={**proponents_data, 'projectID': project.id})
+    proponents_serializer = ProponentsSerializer(data={**proponents_data, 'projectID': project.projectID})
     if proponents_serializer.is_valid():
         proponent = proponents_serializer.save()
     else:
@@ -135,7 +135,7 @@ def create_project(request):
     
     # Create multiple Goals and Objectives
     for data in goals_and_objectives_list:
-        data['projectID'] = project.id
+        data['projectID'] = project.projectID
         goals_and_objectives_serializer = GoalsAndObjectivesSerializer(data=data)
         if goals_and_objectives_serializer.is_valid():
             goals_and_objectives_serializer.save()
@@ -144,7 +144,7 @@ def create_project(request):
 
     # Create multiple Project Activities
     for data in project_activities_list:
-        data['projectID'] = project.id
+        data['projectID'] = project.projectID
         project_activities_serializer = ProjectActivitiesSerializer(data=data)
         if project_activities_serializer.is_valid():
             project_activities_serializer.save()
@@ -153,7 +153,7 @@ def create_project(request):
 
     # Create multiple Budget Requirements
     for data in budget_requirements_list:
-        data['projectID'] = project.id
+        data['projectID'] = project.projectID
         budget_requirements_serializer = BudgetaryRequirementsItemsSerializer(data=data)
         if budget_requirements_serializer.is_valid():
             budget_requirements_serializer.save()
@@ -162,7 +162,7 @@ def create_project(request):
 
     # Create multiple Eval and Monitoring entries
     for data in eval_and_monitoring_list:
-        data['projectID'] = project.id
+        data['projectID'] = project.projectID
         eval_and_monitoring_serializer = EvaluationAndMonitoringSerializer(data=data)
         if eval_and_monitoring_serializer.is_valid():
             eval_and_monitoring_serializer.save()
@@ -171,7 +171,7 @@ def create_project(request):
 
     # Create multiple Monitoring Plan and Schedule entries
     for data in monitoring_plan_and_schedule_list:
-        data['projectID'] = project.id
+        data['projectID'] = project.projectID
         monitoring_plan_and_schedule_serializer = MonitoringPlanAndScheduleSerializer(data=data)
         if monitoring_plan_and_schedule_serializer.is_valid():
             monitoring_plan_and_schedule_serializer.save()
@@ -180,7 +180,7 @@ def create_project(request):
     
     # Create multiple target group
     for data in target_group_list:
-        data['projectID'] = project.id
+        data['projectID'] = project.projectID
         target_group_serializer = TargetGroupSerializer(data=data)
         if target_group_serializer.is_valid():
             target_group_serializer.save()
@@ -189,7 +189,7 @@ def create_project(request):
     
     # Create multiple Loading of Trainers entries
     for data in loading_of_trainers_list:
-        data['projectID'] = project.id
+        data['projectID'] = project.projectID
         loading_of_trainers_serializer = LoadingOfTrainersSerializer(data=data)
         if loading_of_trainers_serializer.is_valid():
             loading_of_trainers_serializer.save()
@@ -198,7 +198,7 @@ def create_project(request):
 
     # Create multiple Signatories
     for data in signatories_list:
-        data['projectID'] = project.id
+        data['projectID'] = project.projectID
         signatories_serializer = SignatoriesSerializer(data=data)
         if signatories_serializer.is_valid():
             signatories_serializer.save()
