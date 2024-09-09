@@ -15,12 +15,32 @@ User = get_user_model()
 
 @api_view(['POST'])
 def login(request):
+    # Fetch user by email
     user = get_object_or_404(User, email=request.data['email'])
+
+    # Check password
     if not user.check_password(request.data['password']):
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Get or create token for the user
     token, created = Token.objects.get_or_create(user=user)
-    serializer = UserSerializer(instance=user)
-    return Response({"token": token.key, "user": serializer.data})
+
+    # Serialize user data
+    user_serializer = UserSerializer(instance=user)
+
+     # Fetch and serialize user's roles
+    try:
+        roles = Roles.objects.get(userID=user)  # Fetch the Roles object associated with this user
+        role_serializer = RoleSerializer(instance=roles)  # Serialize the Roles object
+    except Roles.DoesNotExist:
+        role_serializer = None  # If no roles exist for the user, set it to None
+
+    # Return combined response with user data and roles
+    return Response({
+        "token": token.key,
+        "user": user_serializer.data,
+        "roles": role_serializer.data if role_serializer else None  # Include roles data if it exists
+    })
 
 @api_view(['POST'])
 def signup(request):
