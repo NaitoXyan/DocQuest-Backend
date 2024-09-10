@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
+class Roles(models.Model):
+    roleID = models.AutoField(primary_key=True)
+    role = models.CharField(max_length=30)
+
 class CustomUser(AbstractBaseUser):
     userID = models.AutoField(primary_key=True)
     email = models.CharField(max_length=100, unique=True)
@@ -12,31 +16,38 @@ class CustomUser(AbstractBaseUser):
     college = models.CharField(max_length=50, default="NO COLLEGE SELECTED")
     department = models.CharField(max_length=50, default="NO DEPARTMENT SELECTED")
     contactNumber = models.CharField(max_length=15, default="NO NUMBER")
+    role = models.ManyToManyField(Roles)
 
     USERNAME_FIELD = "email"
 
-class Roles(models.Model):
-    userID = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
-    projectLead = models.BooleanField(default=False)
-    programChair = models.BooleanField(default=False)
-    collegeDean = models.BooleanField(default=False)
-    ECRDirector = models.BooleanField(default=False)
-    VCAA = models.BooleanField(default=False)
-    VCRI = models.BooleanField(default=False)
-    accountant = models.BooleanField(default=False)
-    chancellor = models.BooleanField(default=False)
+class Region(models.Model):
+    regionID = models.AutoField(primary_key=True)
+    region = models.CharField(max_length=15)
+
+class Province(models.Model):
+    provinceID = models.AutoField(primary_key=True)
+    province = models.CharField(max_length=30)
+    regionID = models.ForeignKey(Region, on_delete=models.CASCADE)
+
+class City(models.Model):
+    cityID = models.AutoField(primary_key=True)
+    city = models.CharField(max_length=30)
+    postalCode = models.IntegerField()
+    provinceID = models.ForeignKey(Province, on_delete=models.CASCADE)
+
+class Barangay(models.Model):
+    barangayID = models.AutoField(primary_key=True)
+    barangay = models.CharField(max_length=30)
+    cityID = models.ForeignKey(City, on_delete=models.CASCADE)
 
 class Address(models.Model):
     addressID = models.AutoField(primary_key=True)
     street = models.CharField(max_length=150)
-    barangay = models.CharField(max_length=150)
-    city = models.CharField(max_length=150)
-    province = models.CharField(max_length=150)
-    postal_code = models.CharField(max_length=10)
+    barangayID = models.ForeignKey(Barangay, on_delete=models.CASCADE)
 
 class PartnerAgency(models.Model):
     agencyID = models.AutoField(primary_key=True)
-    agencyName = models.CharField(max_length=150)
+    agencyName = models.CharField(max_length=100)
     addressID = models.ForeignKey(Address, on_delete=models.CASCADE)
 
 class MOA(models.Model):
@@ -72,7 +83,7 @@ class Project(models.Model):
     accreditationLevel = models.CharField(max_length=50)
     college = models.CharField(max_length=50)
     projectLocationID = models.ForeignKey(Address, on_delete=models.CASCADE) 
-    agencyID = models.ForeignKey(PartnerAgency, on_delete=models.CASCADE)
+    agency = models.ManyToManyField(PartnerAgency)
     targetImplementation = models.DateField()
     totalHours = models.FloatField()
     background = models.TextField()
@@ -80,15 +91,16 @@ class Project(models.Model):
     beneficiaries = models.TextField()
     totalBudget = models.IntegerField()
     moaID = models.ForeignKey(MOA, on_delete=models.CASCADE,  null=True, blank=True)
+    proponents = models.ManyToManyField(CustomUser)
 
 class Signatories(models.Model):
     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
     userID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     approvalStatus = models.BooleanField(default=False)
 
-class Proponents(models.Model):
-    projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
-    userID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+# class Proponents(models.Model):
+#     projectID = models.ForeignKey(Project, on_delete=models.CASCADE)
+#     userID = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 class TargetGroup(models.Model):
     targetGroupID = models.AutoField(primary_key=True)
