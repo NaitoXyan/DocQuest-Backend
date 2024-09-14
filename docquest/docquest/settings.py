@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-+6q5l+09zwkn(pp%p0i^mejaiy$3u&9v#!n#7dguz3gwk4=4=m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['docquest-production.up.railway.app']
 
 
 # Application definition

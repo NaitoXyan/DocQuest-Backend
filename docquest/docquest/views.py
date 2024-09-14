@@ -55,14 +55,7 @@ def signup(request):
         # Assign user's role
         role_data = {
             "userID": user.userID,  # Set userID to the new user's ID
-            "projectLead": request.data.get("projectLead", False),
-            "programChair": request.data.get("programChair", False),
-            "collegeDean": request.data.get("collegeDean", False),
-            "ECRDirector": request.data.get("ECRDirector", False),
-            "VCAA": request.data.get("VCAA", False),
-            "VCRI": request.data.get("VCRI", False),
-            "accountant": request.data.get("accountant", False),
-            "chancellor": request.data.get("chancellor", False)
+            "role": request.data.get("role"),
         }
 
         role_serializer = RoleSerializer(data=role_data)
@@ -147,11 +140,11 @@ def create_project(request):
         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # Create Proponents
-    proponents_serializer = ProponentsSerializer(data={**proponents_data, 'projectID': project.projectID})
-    if proponents_serializer.is_valid():
-        proponent = proponents_serializer.save()
-    else:
-        return Response(proponents_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # proponents_serializer = ProponentsSerializer(data={**proponents_data, 'projectID': project.projectID})
+    # if proponents_serializer.is_valid():
+    #     proponent = proponents_serializer.save()
+    # else:
+    #     return Response(proponents_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # Create multiple Goals and Objectives
     for data in goals_and_objectives_list:

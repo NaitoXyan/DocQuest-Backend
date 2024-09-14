@@ -4,12 +4,12 @@ from docquestapp.models import *
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = CustomUser
-        fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname', 'campus', 'college', 'department', 'contactNumber']
+        fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname', 'campus', 'college', 'department', 'contactNumber', 'role']
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Roles
-        fields =  ['userID', 'projectLead', 'programChair', 'collegeDean', 'ECRDirector', 'VCAA', 'VCRI', 'accountant', 'chancellor']
+        fields =  ['roleID', 'role']
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -17,8 +17,8 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = [
             'projectID', 'programCategory', 'projectTitle', 'projectType', 'projectCategory',
             'researchTitle', 'program', 'accreditationLevel', 'college', 'projectLocationID',
-            'agencyID', 'targetImplementation', 'totalHours', 'background', 'projectComponent',
-            'beneficiaries', 'totalBudget', 'moaID'
+            'agency', 'targetImplementation', 'totalHours', 'background', 'projectComponent',
+            'beneficiaries', 'totalBudget', 'moaID', 'proponents'
         ]
 
 class TargetGroupSerializer(serializers.ModelSerializer):
@@ -69,15 +69,35 @@ class SignatoriesSerializer(serializers.ModelSerializer):
         model = Signatories
         fields = ['projectID', 'userID', 'approvalStatus']
 
-class ProponentsSerializer(serializers.ModelSerializer):
+# class ProponentsSerializer(serializers.ModelSerializer):
+#     class Meta(object):
+#         model = Proponents
+#         fields = ['projectID', 'userID']
+
+class RegionSerializer(serializers.ModelSerializer):
     class Meta(object):
-        model = Proponents
-        fields = ['projectID', 'userID']
+        model = Region
+        fields = ['regionID', 'region']
+
+class ProvinceSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Province
+        fields = ['provinceID', 'province', 'regionID']
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = City
+        fields = ['cityID', 'city', 'postalCode', 'provinceID']
+
+class BarangaySerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Barangay
+        fields = ['barangayID', 'barangay', 'cityID']
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Address
-        fields = ['addressID', 'street', 'barangay', 'city', 'province', 'postal_code']
+        fields = ['addressID', 'street', 'barangayID']
 
 class PartnerAgencySerializer(serializers.ModelSerializer):
     class Meta(object):
