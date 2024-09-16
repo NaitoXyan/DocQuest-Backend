@@ -28,18 +28,15 @@ def login(request):
     # Serialize user data
     user_serializer = UserSerializer(instance=user)
 
-     # Fetch and serialize user's roles
-    try:
-        roles = Roles.objects.get(userID=user)  # Fetch the Roles object associated with this user
-        role_serializer = RoleSerializer(instance=roles)  # Serialize the Roles object
-    except Roles.DoesNotExist:
-        role_serializer = None  # If no roles exist for the user, set it to None
+    # Fetch and serialize user's roles
+    roles = user.role.all()  # Get all roles associated with the user
+    role_serializer = RoleSerializer(roles, many=True)  # Serialize the roles
 
     # Return combined response with user data and roles
     return Response({
         "token": token.key,
         "user": user_serializer.data,
-        "roles": role_serializer.data if role_serializer else None  # Include roles data if it exists
+        "roles": role_serializer.data
     })
 
 @api_view(['POST'])

@@ -26,7 +26,11 @@ SECRET_KEY = 'django-insecure-+6q5l+09zwkn(pp%p0i^mejaiy$3u&9v#!n#7dguz3gwk4=4=m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['docquest-production.up.railway.app']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost', 
+    'docquest-production.up.railway.app'
+]
 
 
 # Application definition
@@ -81,7 +85,7 @@ WSGI_APPLICATION = 'docquest.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', 'postgresql://postgres:HQpoqtWGqWhfLsVlGNCGLEbpVhBIRvSU@junction.proxy.rlwy.net:39692/railway')
+        default=os.environ.get('DATABASE_URL', 'postgresql://postgres:nJpMvUmWYTnxeGCesKyghEZmkZLbJFux@junction.proxy.rlwy.net:18315/railway')
     )
 }
 

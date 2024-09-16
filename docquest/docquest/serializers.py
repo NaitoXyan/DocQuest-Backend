@@ -2,6 +2,8 @@ from rest_framework import serializers
 from docquestapp.models import *
 
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.PrimaryKeyRelatedField(many=True, queryset=Roles.objects.all())
+
     class Meta(object):
         model = CustomUser
         fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname', 'campus', 'college', 'department', 'contactNumber', 'role']
