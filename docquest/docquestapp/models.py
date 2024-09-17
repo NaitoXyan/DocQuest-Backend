@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 
 class Roles(models.Model):
     roleID = models.AutoField(primary_key=True)
-    role = models.CharField(max_length=30)
+    role = models.CharField(max_length=30, default='NO ROLE')
 
 class CustomUser(AbstractBaseUser):
     userID = models.AutoField(primary_key=True)
@@ -90,7 +90,7 @@ class Project(models.Model):
     projectComponent = models.TextField()
     beneficiaries = models.TextField()
     totalBudget = models.IntegerField()
-    moaID = models.ForeignKey(MOA, on_delete=models.CASCADE,  null=True, blank=True)
+    moaID = models.ForeignKey(MOA, on_delete=models.CASCADE)
     proponents = models.ManyToManyField(CustomUser)
 
 class Signatories(models.Model):
