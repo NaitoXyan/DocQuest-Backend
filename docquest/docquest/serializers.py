@@ -11,7 +11,14 @@ class UserSerializer(serializers.ModelSerializer):
 class RoleSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Roles
-        fields =  ['roleID', 'role']
+        fields =  ['role']
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    roles = RoleSerializer(many=True, source='role')
+
+    class Meta(object):
+        model = CustomUser
+        fields = ['userID', 'firstname', 'lastname', 'roles']
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta(object):

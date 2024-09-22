@@ -26,17 +26,15 @@ def login(request):
     token, created = Token.objects.get_or_create(user=user)
 
     # Serialize user data
-    user_serializer = UserSerializer(instance=user)
-
-    # Fetch and serialize user's roles
-    roles = user.role.all()  # Get all roles associated with the user
-    role_serializer = RoleSerializer(roles, many=True)  # Serialize the roles
+    user_serializer = UserLoginSerializer(instance=user)
 
     # Return combined response with user data and roles
     return Response({
         "token": token.key,
-        "user": user_serializer.data,
-        "roles": role_serializer.data
+        "userID": user_serializer.data['userID'],
+        "firstname": user_serializer.data['firstname'],
+        "lastname": user_serializer.data['lastname'],
+        "roles": user_serializer.data['roles']
     })
 
 @api_view(['POST'])
