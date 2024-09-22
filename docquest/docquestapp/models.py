@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, UserManager
 
 class Roles(models.Model):
     roleID = models.AutoField(primary_key=True)
@@ -18,6 +18,8 @@ class CustomUser(AbstractBaseUser):
     contactNumber = models.CharField(max_length=15, default="NO NUMBER")
     role = models.ManyToManyField(Roles)
 
+    objects = UserManager()
+    
     USERNAME_FIELD = "email"
 
 class Region(models.Model):
