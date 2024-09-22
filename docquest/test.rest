@@ -1,5 +1,13 @@
-POST http://127.0.0.1:8000/login
+POST http://127.0.0.1:8000/auth/token/login/
 Content-Type: application/json
+
+{ "email": "chalbert@gmail.com", "password": "testpass"}
+
+###
+
+POST http://127.0.0.1:8000/name_and_roles
+Content-Type: application/json
+Authorization: Token tokenNumber
 
 { "email": "chalbert@gmail.com", "password": "testpass"}
 
