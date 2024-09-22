@@ -5,11 +5,17 @@ Content-Type: application/json
 
 ###
 
-POST http://127.0.0.1:8000/name_and_roles
+POST http://127.0.0.1:8000/auth/token/logout/
 Content-Type: application/json
-Authorization: Token tokenNumber
+Authorization: Token 946d9449e71eee646961e26e1f44206b6ea0bd23
 
-{ "email": "chalbert@gmail.com", "password": "testpass"}
+{}
+
+###
+
+GET http://127.0.0.1:8000/name_and_roles
+Content-Type: application/json
+Authorization: Token 946d9449e71eee646961e26e1f44206b6ea0bd23
 
 ###
 
