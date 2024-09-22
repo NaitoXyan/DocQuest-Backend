@@ -14,38 +14,13 @@ from rest_framework.permissions import IsAuthenticated
 User = get_user_model()
 
 @api_view(['POST'])
-def login(request):
-    # Fetch user by email
-    user = get_object_or_404(User, email=request.data['email'])
-
-    # Check password
-    if not user.check_password(request.data['password']):
-        return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-    
-    # Get or create token for the user
-    token, created = Token.objects.get_or_create(user=user)
-
-    # Serialize user data
-    user_serializer = UserLoginSerializer(instance=user)
-
-    # Return combined response with user data and roles
-    return Response({
-        "token": token.key,
-        "userID": user_serializer.data['userID'],
-        "firstname": user_serializer.data['firstname'],
-        "lastname": user_serializer.data['lastname'],
-        "roles": user_serializer.data['roles']
-    })
-
-@api_view(['POST'])
 def signup(request):
-    serializer = UserSerializer(data=request.data)
+    serializer = UserSignupSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         user = User.objects.get(email=request.data['email'])
         user.set_password(request.data['password'])
         user.save()
-        token = Token.objects.create(user=user)
 
         # Assign user's role
         role_data = {
@@ -56,12 +31,27 @@ def signup(request):
         role_serializer = RoleSerializer(data=role_data)
         if role_serializer.is_valid():
             role_serializer.save()
-            return Response({"token": token.key, "user": serializer.data,
-                            "message": "User created and role assigned",
-                            }, status=status.HTTP_201_CREATED)
+            return Response({"message": "User created and role assigned",},
+                            status=status.HTTP_201_CREATED)
         else:
             return Response(role_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def name_and_roles(request):
+    user = request.user  # Get the authenticated user from the request
+
+    # Serialize user data
+    user_serializer = UserLoginSerializer(instance=user)
+
+    # Return combined response with user data and roles
+    return Response({
+        "userID": user_serializer.data['userID'],
+        "firstname": user_serializer.data['firstname'],
+        "lastname": user_serializer.data['lastname'],
+        "roles": user_serializer.data['roles']
+    })
 
 @api_view(['POST'])
 def roles(request):

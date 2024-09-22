@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'djoser',
     'docquestapp',
     "whitenoise.runserver_nostatic",
     'corsheaders',
@@ -142,3 +143,19 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',  # Use token authentication
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
+    ],
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+         'user_create': 'docquestapp.serializer.UserRegistrationSerializer',
+         'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
+    }
+}
