@@ -9,11 +9,12 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 User = get_user_model()
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
     serializer = UserSignupSerializer(data=request.data)
     if serializer.is_valid():
