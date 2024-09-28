@@ -15,16 +15,16 @@ Authorization: Token 946d9449e71eee646961e26e1f44206b6ea0bd23
 
 GET http://127.0.0.1:8000/name_and_roles
 Content-Type: application/json
-Authorization: Token 946d9449e71eee646961e26e1f44206b6ea0bd23
+Authorization: Token ea88149adc5515c9851e42b2e68f001de8bc7f90
 
 ###
 
 POST http://127.0.0.1:8000/signup
 Content-Type: application/json
 
-{ "email": "chalbert@gmail.com", "password": "testpass", "firstname": "Chalbert", "middlename": "Akut",
-    "lastname": "Reyes", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
-    "role": [1]
+{ "email": "ej1@gmail.com", "password": "testpass", "firstname": "Emmannuel", "middlename": "Akut",
+    "lastname": "Duallo", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
+    "role": [4]
 }
 
 ###

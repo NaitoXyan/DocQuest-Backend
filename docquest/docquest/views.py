@@ -9,11 +9,12 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 User = get_user_model()
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
     serializer = UserSignupSerializer(data=request.data)
     if serializer.is_valid():
@@ -23,18 +24,20 @@ def signup(request):
         user.save()
 
         # Assign user's role
-        role_data = {
-            "userID": user.userID,  # Set userID to the new user's ID
-            "role": request.data.get("role"),
-        }
+        # role_data = {
+        #     "userID": user.userID,  # Set userID to the new user's ID
+        #     "role": request.data.get("role"),
+        # }
 
-        role_serializer = RoleSerializer(data=role_data)
-        if role_serializer.is_valid():
-            role_serializer.save()
-            return Response({"message": "User created and role assigned",},
+        # role_serializer = SetRoleSerializer(data=role_data)
+        # if role_serializer.is_valid():
+        #     role_serializer.save()
+            # return Response({"message": "User created and role assigned",},
+            #                 status=status.HTTP_201_CREATED)
+        # else:
+        #     return Response(role_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "User created and role assigned",},
                             status=status.HTTP_201_CREATED)
-        else:
-            return Response(role_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
