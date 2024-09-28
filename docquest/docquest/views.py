@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 User = get_user_model()
 
+# signup
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signup(request):
@@ -23,23 +24,11 @@ def signup(request):
         user.set_password(request.data['password'])
         user.save()
 
-        # Assign user's role
-        # role_data = {
-        #     "userID": user.userID,  # Set userID to the new user's ID
-        #     "role": request.data.get("role"),
-        # }
-
-        # role_serializer = SetRoleSerializer(data=role_data)
-        # if role_serializer.is_valid():
-        #     role_serializer.save()
-            # return Response({"message": "User created and role assigned",},
-            #                 status=status.HTTP_201_CREATED)
-        # else:
-        #     return Response(role_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response({"message": "User created and role assigned",},
                             status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# inig login mag fetch user name and roles
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def name_and_roles(request):
@@ -55,6 +44,33 @@ def name_and_roles(request):
         "lastname": user_serializer.data['lastname'],
         "roles": user_serializer.data['roles']
     })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    user = request.user  # Get the authenticated user from the request
+
+    # Serialize user data
+    user_serializer = UserEditProfileSerializer(instance=user)
+
+    # Return combined response with user data and roles
+    return Response(user_serializer.data)
+
+# edit user profile
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def edit_profile(request, pk):
+    try:
+        instance = CustomUser.objects.get(pk=pk)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "Object not found."}),
+
+    serializer = UserEditProfileSerializer(instance, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def roles(request):

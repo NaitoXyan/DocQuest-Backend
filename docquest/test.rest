@@ -15,7 +15,21 @@ Authorization: Token 946d9449e71eee646961e26e1f44206b6ea0bd23
 
 GET http://127.0.0.1:8000/name_and_roles
 Content-Type: application/json
-Authorization: Token ea88149adc5515c9851e42b2e68f001de8bc7f90
+Authorization: Token f17c9f447d3e24b919f102815eb536bc5cf62ba0
+
+###
+
+GET http://127.0.0.1:8000/get_user_details
+Content-Type: application/json
+Authorization: Token f17c9f447d3e24b919f102815eb536bc5cf62ba0
+
+###
+
+PATCH http://127.0.0.1:8000/edit_user_details/2/
+Content-Type: application/json
+Authorization: Token f17c9f447d3e24b919f102815eb536bc5cf62ba0
+
+{"firstname": "Chalbeee"}
 
 ###
 
