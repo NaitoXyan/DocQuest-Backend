@@ -22,7 +22,7 @@ Authorization: Token ea88149adc5515c9851e42b2e68f001de8bc7f90
 POST http://127.0.0.1:8000/signup
 Content-Type: application/json
 
-{ "email": "ej@gmail.com", "password": "testpass", "firstname": "Emmannuel", "middlename": "Akut",
+{ "email": "ej1@gmail.com", "password": "testpass", "firstname": "Emmannuel", "middlename": "Akut",
     "lastname": "Duallo", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
     "role": [4]
 }

@@ -3,6 +3,8 @@ from django.urls import re_path, include
 from . import views
 
 urlpatterns = [
+    re_path('admin/', admin.site.urls),
+
     re_path('signup', views.signup),
     re_path('name_and_roles', views.name_and_roles),
     re_path('roles', views.roles),
