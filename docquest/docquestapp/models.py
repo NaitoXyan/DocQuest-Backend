@@ -3,12 +3,13 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
 from django.utils import timezone
+from django.contrib.auth.models import PermissionsMixin
 
 class Roles(models.Model):
     roleID = models.AutoField(primary_key=True)
     role = models.CharField(max_length=30, default='NO ROLE')
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     userID = models.AutoField(primary_key=True)
     email = models.EmailField(_("email address"), unique=True)
     password = models.CharField(max_length=100)
