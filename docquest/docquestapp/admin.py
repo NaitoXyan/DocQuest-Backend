@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import CustomUser
-
+from .forms import *
+from .models import *
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -27,5 +26,11 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ("email",)
     ordering = ("email",)
 
+class RolesAdmin(admin.ModelAdmin):
+    form = RoleCreationForm
+
+    fields = ["role"]
+    list_display = ["roleID", "role"]
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Roles, RolesAdmin)

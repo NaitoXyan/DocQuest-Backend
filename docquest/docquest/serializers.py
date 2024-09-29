@@ -2,6 +2,7 @@ from rest_framework import serializers
 from docquestapp.models import *
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
 
+# mga nagamit
 class UserRegistrationSerializer(BaseUserRegistrationSerializer):
     class Meta(BaseUserRegistrationSerializer.Meta):
         fields = (
@@ -14,7 +15,18 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = CustomUser
-        fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname', 'campus', 'college', 'department', 'contactNumber', 'role']
+        fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname',
+                  'campus', 'college', 'department', 'contactNumber', 'role']
+
+class UserEditProfileSerializer(serializers.ModelSerializer):
+    role = serializers.PrimaryKeyRelatedField(many=True, queryset=Roles.objects.all())
+
+    class Meta(object):
+        model = CustomUser
+        fields = [
+            'email', 'password', 'firstname', 'middlename', 'lastname',
+            'campus', 'college', 'department', 'contactNumber', 'role'
+        ]
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta(object):

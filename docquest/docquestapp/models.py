@@ -9,6 +9,9 @@ class Roles(models.Model):
     roleID = models.AutoField(primary_key=True)
     role = models.CharField(max_length=30, default='NO ROLE')
 
+    def __str__(self):
+        return self.role
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     userID = models.AutoField(primary_key=True)
     email = models.EmailField(_("email address"), unique=True)
