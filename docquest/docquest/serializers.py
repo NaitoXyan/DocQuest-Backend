@@ -45,15 +45,22 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['userID', 'firstname', 'lastname', 'roles']
 
-class ProjectSerializer(serializers.ModelSerializer):
+class PostProjectSerializer(serializers.ModelSerializer):
+    sample = serializers.SlugRelatedField(
+        many=True,
+        slug_field='title'
+    )
+
     class Meta(object):
         model = Project
         fields = [
-            'projectID', 'programCategory', 'projectTitle', 'projectType', 'projectCategory',
-            'researchTitle', 'program', 'accreditationLevel', 'college', 'projectLocationID',
-            'agency', 'targetImplementation', 'totalHours', 'background', 'projectComponent',
-            'beneficiaries', 'totalBudget', 'moaID', 'proponents'
+            'userID', 'programCategory', 'projectTitle', 'projectType',
+            'projectCategory', 'researchTitle', 'program', 'accreditationLevel',
+            'college', 'projectLocationID', 'agency', 'targetImplementation',
+            'totalHours', 'background', 'projectComponent', 'beneficiaries',
+            'totalBudget'
         ]
+        depth = 1
 
 class TargetGroupSerializer(serializers.ModelSerializer):
     class Meta(object):
