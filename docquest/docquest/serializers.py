@@ -6,7 +6,7 @@ from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSeria
 class UserRegistrationSerializer(BaseUserRegistrationSerializer):
     class Meta(BaseUserRegistrationSerializer.Meta):
         fields = (
-            'userID', 'email', 'password', 'firstname', 'middlename', 'lastname',
+            'email', 'password', 'firstname', 'middlename', 'lastname',
             'campus', 'college', 'department', 'contactNumber', 'role',
         )
 
@@ -15,8 +15,10 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = CustomUser
-        fields = ['userID', 'email', 'password', 'firstname', 'middlename', 'lastname',
-                  'campus', 'college', 'department', 'contactNumber', 'role']
+        fields = [
+            'email', 'password', 'firstname', 'middlename', 'lastname',
+            'campus', 'college', 'department', 'contactNumber', 'role'
+        ]
 
 class UserEditProfileSerializer(serializers.ModelSerializer):
     role = serializers.PrimaryKeyRelatedField(many=True, queryset=Roles.objects.all())
@@ -151,9 +153,9 @@ class EffectivitySerializer(serializers.ModelSerializer):
         fields = ['effectiveID', 'effectivity', 'moaID']
 
 class PostProjectSerializer(serializers.ModelSerializer):
-    projectUser = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
-    projectLocation = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
-    projectAgency = serializers.PrimaryKeyRelatedField(queryset=PartnerAgency.objects.all(), many=True)
+    userID = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+    projectLocationID = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
+    agency = serializers.PrimaryKeyRelatedField(queryset=PartnerAgency.objects.all(), many=True)
 
     targetGroups = PostTargetGroupSerializer(many=True)
     goalsAndObjectives = PostGoalsAndObjectivesSerializer(many=True)
@@ -177,7 +179,7 @@ class PostProjectSerializer(serializers.ModelSerializer):
             'loadingOfTrainers', 'signatories', 'proponents'
         ]
 
-    def create(self, validated_data):
+    def create(self, validated_data): 
         targetGroups_data = validated_data.pop('targetGroups')
         goalsAndObjectives_data = validated_data.pop('goalsAndObjectives')
         monitoringPlanSchedules_data = validated_data.pop('monitoringPlanSchedules')
@@ -188,7 +190,11 @@ class PostProjectSerializer(serializers.ModelSerializer):
         signatories_data = validated_data.pop('signatories')
         proponents_data = validated_data.pop('proponents')
 
+        agency_data = validated_data.pop('agency')
+
         project = Project.objects.create(**validated_data)
+
+        project.agency.set(agency_data)
 
         for targetGroup_data in targetGroups_data:
             TargetGroup.objects.create(project=project, **targetGroup_data)

@@ -13,10 +13,14 @@ urlpatterns = [
     # edit user profile
     re_path('get_user_details', views.user_profile),
     path('edit_user_details/<int:pk>/', views.edit_profile),
-    re_path('test_token', views.test_token),
+
+    # create project
+    path('create_project', views.create_project),
 
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
+
+    re_path('test_token', views.test_token),
 ]
 
 # /auth/users/ Register a new user

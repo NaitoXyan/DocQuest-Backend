@@ -7,7 +7,8 @@ from django.contrib.auth.models import PermissionsMixin
 
 class Roles(models.Model):
     roleID = models.AutoField(primary_key=True)
-    role = models.CharField(max_length=30, default='NO ROLE')
+    code = models.CharField(max_length=4)
+    role = models.CharField(max_length=50, default='NO ROLE')
 
     def __str__(self):
         return self.role
@@ -40,22 +41,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class Region(models.Model):
     regionID = models.AutoField(primary_key=True)
-    region = models.CharField(max_length=15)
+    region = models.CharField(max_length=50)
 
 class Province(models.Model):
     provinceID = models.AutoField(primary_key=True)
-    province = models.CharField(max_length=30)
+    province = models.CharField(max_length=50)
     regionID = models.ForeignKey(Region, related_name='province', on_delete=models.CASCADE)
 
 class City(models.Model):
     cityID = models.AutoField(primary_key=True)
-    city = models.CharField(max_length=30)
+    city = models.CharField(max_length=50)
     postalCode = models.IntegerField()
     provinceID = models.ForeignKey(Province, related_name='city', on_delete=models.CASCADE)
 
 class Barangay(models.Model):
     barangayID = models.AutoField(primary_key=True)
-    barangay = models.CharField(max_length=30)
+    barangay = models.CharField(max_length=50)
     cityID = models.ForeignKey(City, related_name='barangay', on_delete=models.CASCADE)
 
 class Address(models.Model):
@@ -109,26 +110,26 @@ class Project(models.Model):
     projectComponent = models.TextField()
     beneficiaries = models.TextField()
     totalBudget = models.IntegerField()
-    moaID = models.ForeignKey(MOA, related_name='projectMoa', on_delete=models.CASCADE)
+    moaID = models.ForeignKey(MOA, related_name='projectMoa', on_delete=models.CASCADE, null=True)
 
 class Signatories(models.Model):
-    projectID = models.ForeignKey(Project, related_name='signatoryProject', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='signatoryProject', on_delete=models.CASCADE)
     userID = models.ForeignKey(CustomUser, related_name='signatoryUser', on_delete=models.CASCADE)
     approvalStatus = models.BooleanField(default=False)
 
 class Proponents(models.Model):
-    projectID = models.ForeignKey(Project, related_name='proponent', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='proponent', on_delete=models.CASCADE)
     proponent = models.CharField(max_length=50)
 
 class TargetGroup(models.Model):
     targetGroupID = models.AutoField(primary_key=True)
     targetGroup = models.CharField(max_length=200)
-    projectID = models.ForeignKey(Project, related_name='targetGroup', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='targetGroup', on_delete=models.CASCADE)
 
 class GoalsAndObjectives(models.Model):
     GAOID = models.AutoField(primary_key=True)
     goalsAndObjectives = models.TextField()
-    projectID = models.ForeignKey(Project, related_name='goalsAndObjectives', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='goalsAndObjectives', on_delete=models.CASCADE)
 
 class LoadingOfTrainers(models.Model):
     LOTID = models.AutoField(primary_key=True)
@@ -138,7 +139,7 @@ class LoadingOfTrainers(models.Model):
     ustpBudget = models.IntegerField()
     agencyBudget = models.IntegerField()
     totalBudgetRequirement = models.IntegerField()
-    projectID = models.ForeignKey(Project, related_name='loadingOfTrainers', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='loadingOfTrainers', on_delete=models.CASCADE)
 
 class ProjectActivities(models.Model):
     projectActivitiesID = models.AutoField(primary_key=True)
@@ -146,7 +147,7 @@ class ProjectActivities(models.Model):
     involved = models.TextField()
     targetDate = models.DateField()
     personResponsibleID = models.CharField(max_length=50)
-    projectID = models.ForeignKey(Project, related_name='projectActivities', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='projectActivities', on_delete=models.CASCADE)
 
 class BudgetRequirementsItems(models.Model):
     itemID = models.AutoField(primary_key=True)
@@ -154,7 +155,7 @@ class BudgetRequirementsItems(models.Model):
     ustpAmount = models.IntegerField()
     partnerAmount = models.IntegerField()
     totalAmount = models.IntegerField()
-    projectID = models.ForeignKey(Project, related_name='budgetRequirements', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='budgetRequirements', on_delete=models.CASCADE)
 
 class EvaluationAndMonitoring(models.Model):
     EAMID = models.AutoField(primary_key=True)
@@ -163,7 +164,7 @@ class EvaluationAndMonitoring(models.Model):
     meansOfVerification = models.TextField()
     risksAssumptions = models.TextField()
     type = models.CharField(max_length=100)
-    projectID = models.ForeignKey(Project, related_name='evalAndMonitoring', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='evalAndMonitoring', on_delete=models.CASCADE)
 
 class MonitoringPlanAndSchedule(models.Model):
     MPASID = models.AutoField(primary_key=True)
@@ -171,4 +172,4 @@ class MonitoringPlanAndSchedule(models.Model):
     dataGatheringStrategy = models.TextField()
     schedule = models.TextField()
     implementationPhase = models.TextField()
-    projectID = models.ForeignKey(Project, related_name='monitoringPlanSched', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name='monitoringPlanSched', on_delete=models.CASCADE)
