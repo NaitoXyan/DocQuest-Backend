@@ -1,3 +1,13 @@
+POST http://127.0.0.1:8000/signup
+Content-Type: application/json
+
+{ "email": "ej@gmail.com", "password": "testpass", "firstname": "Chalbert", "middlename": "Akut",
+    "lastname": "Reyes", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
+    "role": [3]
+}
+
+###
+
 POST http://127.0.0.1:8000/auth/token/login/
 Content-Type: application/json
 
@@ -13,9 +23,136 @@ Authorization: Token 946d9449e71eee646961e26e1f44206b6ea0bd23
 
 ###
 
+# submit created proj
+POST http://127.0.0.1:8000/create_project
+Content-Type: application/json
+Authorization: Token 605bcb7594044106d834bc23e31120d69aca0f78
+
+{
+    "userID": 1,
+    "programCategory": "Community Development",
+    "projectTitle": "Sustainable Agriculture Program",
+    "projectType": "Research",
+    "projectCategory": "Agriculture",
+    "researchTitle": "Organic Farming Techniques",
+    "program": "Agriculture and Food Security",
+    "accreditationLevel": "Level 3",
+    "college": "College of Agriculture",
+    "projectLocationID": 1,
+    "agency": [1],
+    "targetImplementation": "2024-12-01",
+    "totalHours": 120.5,
+    "background": "This project aims to promote sustainable agriculture through organic farming techniques.",
+    "projectComponent": "Training and development of organic farming methods.",
+    "beneficiaries": "Local farmers and rural communities.",
+    "totalBudget": 500000,
+    "targetGroups": [
+        {
+            "targetGroup": "Farmers"
+        },
+        {
+            "targetGroup": "Local Government Units"
+        }
+    ],
+    "goalsAndObjectives": [
+        {
+            "goalsAndObjectives": "Increase agricultural productivity using organic methods."
+        },
+        {
+            "goalsAndObjectives": "Provide training to local farmers on sustainable farming practices."
+        }
+    ],
+    "monitoringPlanSchedules": [
+        {
+            "approach": "On-site visits and evaluations.",
+            "dataGatheringStrategy": "Surveys and farmer interviews.",
+            "schedule": "Every quarter of the year.",
+            "implementationPhase": "Training and farming stages."
+        }
+    ],
+    "evaluationAndMonitorings": [
+        {
+            "projectSummary": "The project aims to improve food security in rural areas.",
+            "indicators": "Increased yield, adoption of organic methods.",
+            "meansOfVerification": "Farmers' reports and crop analysis.",
+            "risksAssumptions": "Weather and pest challenges.",
+            "type": "Mid-term evaluation."
+        }
+    ],
+    "budgetaryRequirements": [
+        {
+            "itemName": "Organic Fertilizers",
+            "ustpAmount": 10000,
+            "partnerAmount": 5000,
+            "totalAmount": 15000
+        },
+        {
+            "itemName": "Training Materials",
+            "ustpAmount": 2000,
+            "partnerAmount": 1000,
+            "totalAmount": 3000
+        }
+    ],
+    "projectActivities": [
+        {
+            "objective": "Train farmers in organic farming techniques.",
+            "involved": "Agriculture trainers and local farmers.",
+            "targetDate": "2024-11-01",
+            "personResponsibleID": "2"
+        }
+    ],
+    "loadingOfTrainers": [
+        {
+            "faculty": "Agriculture Department Faculty",
+            "trainingLoad": "Organic farming training sessions.",
+            "hours": 40.0,
+            "ustpBudget": 50000,
+            "agencyBudget": 25000,
+            "totalBudgetRequirement": 75000
+        }
+    ],
+    "signatories": [
+        {
+            "userID": 2,
+            "approvalStatus": false
+        },
+        {
+            "userID": 3,
+            "approvalStatus": false
+        }
+    ],
+    "proponents": [
+        {
+            "proponent": "John Doe"
+        },
+        {
+            "proponent": "Jane Smith"
+        }
+    ]
+}
+
+###
+
+# mao ni tig kuha sa username og roles pang display
 GET http://127.0.0.1:8000/name_and_roles
 Content-Type: application/json
-Authorization: Token ea88149adc5515c9851e42b2e68f001de8bc7f90
+Authorization: Token f17c9f447d3e24b919f102815eb536bc5cf62ba0
+
+###
+
+# get request inig navigate sa user profile
+GET http://127.0.0.1:8000/get_user_details
+Content-Type: application/json
+Authorization: Token f17c9f447d3e24b919f102815eb536bc5cf62ba0
+
+###
+
+# patch request inig edit user
+PATCH http://127.0.0.1:8000/edit_user_details/2/
+Content-Type: application/json
+Authorization: Token f17c9f447d3e24b919f102815eb536bc5cf62ba0
+
+{"firstname": "Chalbeee"}
 
 ###
 
