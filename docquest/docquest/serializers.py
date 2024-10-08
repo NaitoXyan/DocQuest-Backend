@@ -82,7 +82,7 @@ class PostProjectActivitiesSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = ProjectActivities
         fields = [
-            'objective', 'involved', 'targetDate', 'personResponsibleID'
+            'objective', 'involved', 'targetDate', 'personResponsible'
         ]
 
 class PostLoadingOfTrainersSerializer(serializers.ModelSerializer):
