@@ -1,9 +1,9 @@
 POST http://127.0.0.1:8000/signup
 Content-Type: application/json
 
-{ "email": "ej@gmail.com", "password": "testpass", "firstname": "Chalbert", "middlename": "Akut",
-    "lastname": "Reyes", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
-    "role": [3]
+{ "email": "guylord@gmail.com", "password": "testpass", "firstname": "Guylord", "middlename": "Akut",
+    "lastname": "Sagun", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
+    "role": [2]
 }
 
 ###
@@ -136,7 +136,7 @@ Authorization: Token 605bcb7594044106d834bc23e31120d69aca0f78
 # mao ni tig kuha sa username og roles pang display
 GET http://127.0.0.1:8000/name_and_roles
 Content-Type: application/json
-Authorization: Token f17c9f447d3e24b919f102815eb536bc5cf62ba0
+Authorization: Token 91d69e4cc1ff356353488851fa2db69efa1a1f0a
 
 ###
 
