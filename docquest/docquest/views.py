@@ -83,6 +83,20 @@ def create_project(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_project(request, pk): 
+    user = request.user  # Get the authenticated user
+
+    # Try to fetch the project by its ID
+    try:
+        project = Project.objects.get(pk=pk)  # Use pk to fetch the project directly
+    except Project.DoesNotExist:
+        return Response({"detail": "Project not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    project_serializer = GetProjectSerializer(instance=project)
+    return Response(project_serializer.data)
+
 @api_view(['POST'])
 def roles(request):
     # Retrieve the userID from the request data

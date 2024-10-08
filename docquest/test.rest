@@ -133,6 +133,12 @@ Authorization: Token 605bcb7594044106d834bc23e31120d69aca0f78
 
 ###
 
+GET http://127.0.0.1:8000/get_project/3/
+Content-Type: application/json
+Authorization: Token 91d69e4cc1ff356353488851fa2db69efa1a1f0a
+
+###
+
 # mao ni tig kuha sa username og roles pang display
 GET http://127.0.0.1:8000/name_and_roles
 Content-Type: application/json

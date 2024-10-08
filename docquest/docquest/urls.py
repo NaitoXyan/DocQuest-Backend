@@ -20,6 +20,9 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
 
+    # get project
+    path('get_project/<int:pk>/', views.get_project),
+
     re_path('test_token', views.test_token),
 ]
 

@@ -108,24 +108,32 @@ class RegionSerializer(serializers.ModelSerializer):
         fields = ['regionID', 'region']
 
 class ProvinceSerializer(serializers.ModelSerializer):
+    region = RegionSerializer(source='regionID', read_only=True)
+
     class Meta(object):
         model = Province
-        fields = ['provinceID', 'province', 'regionID']
+        fields = ['provinceID', 'province', 'region']
 
 class CitySerializer(serializers.ModelSerializer):
+    province = ProvinceSerializer(source='provinceID', read_only=True)
+
     class Meta(object):
         model = City
-        fields = ['cityID', 'city', 'postalCode', 'provinceID']
+        fields = ['cityID', 'city', 'postalCode', 'province']
 
 class BarangaySerializer(serializers.ModelSerializer):
+    city = CitySerializer(source='cityID', read_only=True)
+
     class Meta(object):
         model = Barangay
-        fields = ['barangayID', 'barangay', 'cityID']
+        fields = ['barangayID', 'barangay', 'city']
 
 class AddressSerializer(serializers.ModelSerializer):
+    barangay = BarangaySerializer(source='barangayID', read_only=True)
+
     class Meta(object):
         model = Address
-        fields = ['addressID', 'street', 'barangayID']
+        fields = ['addressID', 'street', 'barangay']
 
 class PartnerAgencySerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -151,6 +159,38 @@ class EffectivitySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Effectivity
         fields = ['effectiveID', 'effectivity', 'moaID']
+
+class GetProjectLeaderSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = CustomUser
+        fields = ['userID', 'firstname', 'lastname']
+
+class GetProjectSerializer(serializers.ModelSerializer):
+    userID = GetProjectLeaderSerializer()
+    projectLocationID = AddressSerializer()
+    agency = PartnerAgencySerializer(many=True)
+
+    targetGroups = PostTargetGroupSerializer(source='targetGroup', many=True)
+    goalsAndObjectives = PostGoalsAndObjectivesSerializer(many=True)
+    monitoringPlanSchedules = PostMonitoringPlanAndScheduleSerializer(source='monitoringPlanSched', many=True)
+    evaluationAndMonitorings = PostEvaluationAndMonitoringSerializer(source='evalAndMonitoring', many=True)
+    budgetaryRequirements = PostBudgetaryRequirementsItemsSerializer(source='budgetRequirements', many=True)
+    projectActivities = PostProjectActivitiesSerializer(many=True)
+    loadingOfTrainers = PostLoadingOfTrainersSerializer(many=True)
+    signatories = PostSignatoriesSerializer(source='signatoryProject', many=True)
+    proponents = PostProponentsSerializer(source='proponent', many=True)
+
+    class Meta(object):
+        model = Project
+        fields = [
+            'userID', 'programCategory', 'projectTitle', 'projectType',
+            'projectCategory', 'researchTitle', 'program', 'accreditationLevel',
+            'college', 'projectLocationID', 'agency', 'targetImplementation',
+            'totalHours', 'background', 'projectComponent', 'beneficiaries',
+            'totalBudget', 'targetGroups', 'goalsAndObjectives', 'monitoringPlanSchedules',
+            'evaluationAndMonitorings', 'budgetaryRequirements', 'projectActivities',
+            'loadingOfTrainers', 'signatories', 'proponents'
+        ]
 
 class PostProjectSerializer(serializers.ModelSerializer):
     userID = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
