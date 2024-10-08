@@ -146,7 +146,7 @@ class ProjectActivities(models.Model):
     objective = models.TextField()
     involved = models.TextField()
     targetDate = models.DateField()
-    personResponsibleID = models.CharField(max_length=50)
+    personResponsible = models.CharField(max_length=50)
     project = models.ForeignKey(Project, related_name='projectActivities', on_delete=models.CASCADE)
 
 class BudgetRequirementsItems(models.Model):
