@@ -94,12 +94,6 @@ def create_project(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-<<<<<<< Updated upstream
-@api_view(['POST'])
-def roles(request):
-    # Retrieve the userID from the request data
-    user_id = request.data.get('userID')
-=======
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_project(request, pk): 
@@ -119,7 +113,6 @@ def get_project(request, pk):
 def get_regions(request):
     # Query all regions
     regions = Region.objects.all()
->>>>>>> Stashed changes
 
     # Serialize the regions
     region_serializer = RegionSerializer(regions, many=True)

@@ -96,9 +96,11 @@ class RegionSerializer(serializers.ModelSerializer):
         fields = ['regionID', 'region']
 
 class ProvinceSerializer(serializers.ModelSerializer):
+    region = RegionSerializer(source='regionID', read_only=True)
+
     class Meta(object):
         model = Province
-        fields = ['provinceID', 'province', 'regionID']
+        fields = ['provinceID', 'province', 'region']
 
 class GetProvinceSerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -106,9 +108,11 @@ class GetProvinceSerializer(serializers.ModelSerializer):
         fields = ['provinceID', 'province']
 
 class CitySerializer(serializers.ModelSerializer):
+    province = ProvinceSerializer(source='provinceID', read_only=True)
+
     class Meta(object):
         model = City
-        fields = ['cityID', 'city', 'postalCode', 'provinceID']
+        fields = ['cityID', 'city', 'postalCode', 'province']
 
 class GetCitySerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -116,9 +120,11 @@ class GetCitySerializer(serializers.ModelSerializer):
         fields = ['cityID', 'city']
 
 class BarangaySerializer(serializers.ModelSerializer):
+    city = CitySerializer(source='cityID', read_only=True)
+
     class Meta(object):
         model = Barangay
-        fields = ['barangayID', 'barangay', 'cityID']
+        fields = ['barangayID', 'barangay', 'city']
 
 class GetBarangaySerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -126,9 +132,11 @@ class GetBarangaySerializer(serializers.ModelSerializer):
         fields = ['barangayID', 'barangay']
 
 class AddressSerializer(serializers.ModelSerializer):
+    barangay = BarangaySerializer(source='barangayID', read_only=True)
+
     class Meta(object):
         model = Address
-        fields = ['addressID', 'street', 'barangayID']
+        fields = ['addressID', 'street', 'barangay']
 
 class PartnerAgencySerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -155,8 +163,6 @@ class EffectivitySerializer(serializers.ModelSerializer):
         model = Effectivity
         fields = ['effectiveID', 'effectivity', 'moaID']
 
-<<<<<<< Updated upstream
-=======
 class GetProjectLeaderSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = CustomUser
@@ -166,7 +172,6 @@ class GetProjectSerializer(serializers.ModelSerializer):
     userID = GetProjectLeaderSerializer()
     projectLocationID = AddressSerializer()
     agency = PartnerAgencySerializer(many=True)
-
     targetGroups = TargetGroupSerializer(source='targetGroup', many=True)
     goalsAndObjectives = GoalsAndObjectivesSerializer(many=True)
     monitoringPlanSchedules = MonitoringPlanAndScheduleSerializer(source='monitoringPlanSched', many=True)
@@ -189,7 +194,6 @@ class GetProjectSerializer(serializers.ModelSerializer):
             'loadingOfTrainers', 'signatories', 'proponents'
         ]
 
->>>>>>> Stashed changes
 class PostProjectSerializer(serializers.ModelSerializer):
     userID = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
     projectLocationID = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())

@@ -22,8 +22,6 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
 
-<<<<<<< Updated upstream
-=======
     # get project
     path('get_project/<int:pk>/', views.get_project),
 
@@ -33,7 +31,6 @@ urlpatterns = [
     path('get_cities', views.get_cities),
     path('get_barangays', views.get_barangays),
 
->>>>>>> Stashed changes
     re_path('test_token', views.test_token),
 ]
 
