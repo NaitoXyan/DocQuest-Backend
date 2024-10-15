@@ -5,9 +5,11 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # create role
+    path('create_role', views.create_role),
+
     re_path('signup', views.signup),
     re_path('name_and_roles', views.name_and_roles),
-    re_path('roles', views.roles),
     re_path('create_project', views.create_project),
 
     # edit user profile
@@ -22,6 +24,12 @@ urlpatterns = [
 
     # get project
     path('get_project/<int:pk>/', views.get_project),
+
+    # get address
+    path('get_regions', views.get_regions),
+    path('get_provinces', views.get_provinces),
+    path('get_cities', views.get_cities),
+    path('get_barangays', views.get_barangays),
 
     re_path('test_token', views.test_token),
 ]
