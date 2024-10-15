@@ -1,9 +1,9 @@
 POST http://127.0.0.1:8000/signup
 Content-Type: application/json
 
-{ "email": "guylord@gmail.com", "password": "testpass", "firstname": "Guylord", "middlename": "Akut",
-    "lastname": "Sagun", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
-    "role": [2]
+{ "email": "chalbert@gmail.com", "password": "testpass", "firstname": "Chalbert", "middlename": "Akut",
+    "lastname": "Reyes", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
+    "role": [1]
 }
 
 ###
@@ -156,20 +156,10 @@ Authorization: Token f17c9f447d3e24b919f102815eb536bc5cf62ba0
 
 ###
 
-POST http://127.0.0.1:8000/signup
+POST http://127.0.0.1:8000/create_role
 Content-Type: application/json
 
-{ "email": "ej1@gmail.com", "password": "testpass", "firstname": "Emmannuel", "middlename": "Akut",
-    "lastname": "Duallo", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
-    "role": [4]
-}
-
-###
-
-POST http://127.0.0.1:8000/roles
-Content-Type: application/json
-
-{ "userID": 1, "projectLead": true }
+{ "roleID": 1, "code": "rglr", "role": "Regular" }
 
 ###
 
@@ -292,6 +282,34 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+
+GET http://127.0.0.1:8000/get_regions
+Content-Type: application/json
+
+{}
+
+###
+
+GET http://127.0.0.1:8000/get_provinces
+Content-Type: application/json
+
+{}
+
+###
+
+GET http://127.0.0.1:8000/get_cities
+Content-Type: application/json
+
+{}
+
+###
+
+GET http://127.0.0.1:8000/get_barangays
+Content-Type: application/json
+
+{}
 
 ###
 

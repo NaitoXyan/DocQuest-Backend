@@ -73,6 +73,17 @@ def edit_profile(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
+def create_role(request):
+    role_serializer = RoleSerializer(data=request.data)
+
+    if role_serializer.is_valid():
+        role_serializer.save()
+        return Response({"message": "Role successfuly created"}, status=status.HTTP_201_CREATED)
+
+    return Response(role_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_project(request):
     serializer = PostProjectSerializer(data=request.data)
@@ -83,29 +94,67 @@ def create_project(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+<<<<<<< Updated upstream
 @api_view(['POST'])
 def roles(request):
     # Retrieve the userID from the request data
     user_id = request.data.get('userID')
+=======
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_project(request, pk): 
+    user = request.user  # Get the authenticated user
 
-    # Manually check if userID exists in CustomUser
-    if not User.objects.filter(userID=user_id).exists():
-        return Response("User does not exist.", status=status.HTTP_400_BAD_REQUEST)
-    
-    # Check if the user already has a role entry in the Roles table
+    # Try to fetch the project by its ID
     try:
-        role_instance = Roles.objects.get(userID=user_id)
-    except Roles.DoesNotExist:
-        role_instance = None
+        project = Project.objects.get(pk=pk)  # Use pk to fetch the project directly
+    except Project.DoesNotExist:
+        return Response({"detail": "Project not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    project_serializer = GetProjectSerializer(instance=project)
+    return Response(project_serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_regions(request):
+    # Query all regions
+    regions = Region.objects.all()
+>>>>>>> Stashed changes
+
+    # Serialize the regions
+    region_serializer = RegionSerializer(regions, many=True)
+
+    return Response(region_serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_provinces(request):
     
-    # Initialize the serializer with the instance to update if it exists
-    serializer = RoleSerializer(instance=role_instance, data=request.data)
-    
-    if serializer.is_valid():
-        serializer.save()  # Save will either create a new instance or update the existing one
-        return Response("Successfully assigned/updated role/s.", status=status.HTTP_200_OK)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    provinces = Province.objects.all()
+
+    provinces_serializer = GetProvinceSerializer(provinces, many=True)
+
+    return Response(provinces_serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_cities(request):
+
+    cities = City.objects.all()
+
+    cities_serializer = GetCitySerializer(cities, many=True)
+
+    return Response(cities_serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_barangays(request):
+
+    barangays = Barangay.objects.all()
+
+    barangays_serializer = GetBarangaySerializer(barangays, many=True)
+
+    return Response(barangays_serializer.data)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])

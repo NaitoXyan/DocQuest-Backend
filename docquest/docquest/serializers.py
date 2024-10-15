@@ -3,13 +3,6 @@ from docquestapp.models import *
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
 
 # mga nagamit
-class UserRegistrationSerializer(BaseUserRegistrationSerializer):
-    class Meta(BaseUserRegistrationSerializer.Meta):
-        fields = (
-            'email', 'password', 'firstname', 'middlename', 'lastname',
-            'campus', 'college', 'department', 'contactNumber', 'role',
-        )
-
 class UserSignupSerializer(serializers.ModelSerializer):
     role = serializers.PrimaryKeyRelatedField(many=True, queryset=Roles.objects.all())
 
@@ -33,12 +26,7 @@ class UserEditProfileSerializer(serializers.ModelSerializer):
 class RoleSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Roles
-        fields =  ['role']
-
-class SetRoleSerializer(serializers.ModelSerializer):
-    class Meta(object):
-        model = CustomUser
-        fields =  ['role']
+        fields =  ['roleID', 'code', 'role']
 
 class UserLoginSerializer(serializers.ModelSerializer):
     roles = RoleSerializer(many=True, source='role')
@@ -47,17 +35,17 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['userID', 'firstname', 'lastname', 'roles']
 
-class PostTargetGroupSerializer(serializers.ModelSerializer):
+class TargetGroupSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = TargetGroup
         fields = ['targetGroup']
     
-class PostGoalsAndObjectivesSerializer(serializers.ModelSerializer):
+class GoalsAndObjectivesSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = GoalsAndObjectives
         fields = ['goalsAndObjectives']
 
-class PostMonitoringPlanAndScheduleSerializer(serializers.ModelSerializer):
+class MonitoringPlanAndScheduleSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = MonitoringPlanAndSchedule
         fields = [
@@ -65,7 +53,7 @@ class PostMonitoringPlanAndScheduleSerializer(serializers.ModelSerializer):
             'implementationPhase'
         ]
 
-class PostEvaluationAndMonitoringSerializer(serializers.ModelSerializer):
+class EvaluationAndMonitoringSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = EvaluationAndMonitoring
         fields = [
@@ -73,31 +61,31 @@ class PostEvaluationAndMonitoringSerializer(serializers.ModelSerializer):
             'risksAssumptions', 'type'
         ]
 
-class PostBudgetaryRequirementsItemsSerializer(serializers.ModelSerializer):
+class BudgetaryRequirementsItemsSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = BudgetRequirementsItems
         fields = ['itemName', 'ustpAmount', 'partnerAmount', 'totalAmount']
 
-class PostProjectActivitiesSerializer(serializers.ModelSerializer):
+class ProjectActivitiesSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = ProjectActivities
         fields = [
             'objective', 'involved', 'targetDate', 'personResponsibleID'
         ]
 
-class PostLoadingOfTrainersSerializer(serializers.ModelSerializer):
+class LoadingOfTrainersSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = LoadingOfTrainers
         fields = [
             'faculty', 'trainingLoad', 'hours', 'ustpBudget', 'agencyBudget', 'totalBudgetRequirement'
         ]
 
-class PostSignatoriesSerializer(serializers.ModelSerializer):
+class SignatoriesSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Signatories
         fields = ['userID', 'approvalStatus']
 
-class PostProponentsSerializer(serializers.ModelSerializer):
+class ProponentsSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Proponents
         fields = ['proponent']
@@ -112,15 +100,30 @@ class ProvinceSerializer(serializers.ModelSerializer):
         model = Province
         fields = ['provinceID', 'province', 'regionID']
 
+class GetProvinceSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Province
+        fields = ['provinceID', 'province']
+
 class CitySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = City
         fields = ['cityID', 'city', 'postalCode', 'provinceID']
 
+class GetCitySerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = City
+        fields = ['cityID', 'city']
+
 class BarangaySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Barangay
         fields = ['barangayID', 'barangay', 'cityID']
+
+class GetBarangaySerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Barangay
+        fields = ['barangayID', 'barangay']
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta(object):
@@ -152,20 +155,55 @@ class EffectivitySerializer(serializers.ModelSerializer):
         model = Effectivity
         fields = ['effectiveID', 'effectivity', 'moaID']
 
+<<<<<<< Updated upstream
+=======
+class GetProjectLeaderSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = CustomUser
+        fields = ['userID', 'firstname', 'lastname']
+
+class GetProjectSerializer(serializers.ModelSerializer):
+    userID = GetProjectLeaderSerializer()
+    projectLocationID = AddressSerializer()
+    agency = PartnerAgencySerializer(many=True)
+
+    targetGroups = TargetGroupSerializer(source='targetGroup', many=True)
+    goalsAndObjectives = GoalsAndObjectivesSerializer(many=True)
+    monitoringPlanSchedules = MonitoringPlanAndScheduleSerializer(source='monitoringPlanSched', many=True)
+    evaluationAndMonitorings = EvaluationAndMonitoringSerializer(source='evalAndMonitoring', many=True)
+    budgetaryRequirements = BudgetaryRequirementsItemsSerializer(source='budgetRequirements', many=True)
+    projectActivities = ProjectActivitiesSerializer(many=True)
+    loadingOfTrainers = LoadingOfTrainersSerializer(many=True)
+    signatories = SignatoriesSerializer(source='signatoryProject', many=True)
+    proponents = ProponentsSerializer(source='proponent', many=True)
+
+    class Meta(object):
+        model = Project
+        fields = [
+            'userID', 'programCategory', 'projectTitle', 'projectType',
+            'projectCategory', 'researchTitle', 'program', 'accreditationLevel',
+            'college', 'projectLocationID', 'agency', 'targetImplementation',
+            'totalHours', 'background', 'projectComponent', 'beneficiaries',
+            'totalBudget', 'targetGroups', 'goalsAndObjectives', 'monitoringPlanSchedules',
+            'evaluationAndMonitorings', 'budgetaryRequirements', 'projectActivities',
+            'loadingOfTrainers', 'signatories', 'proponents'
+        ]
+
+>>>>>>> Stashed changes
 class PostProjectSerializer(serializers.ModelSerializer):
     userID = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
     projectLocationID = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
     agency = serializers.PrimaryKeyRelatedField(queryset=PartnerAgency.objects.all(), many=True)
 
-    targetGroups = PostTargetGroupSerializer(many=True)
-    goalsAndObjectives = PostGoalsAndObjectivesSerializer(many=True)
-    monitoringPlanSchedules = PostMonitoringPlanAndScheduleSerializer(many=True)
-    evaluationAndMonitorings = PostEvaluationAndMonitoringSerializer(many=True)
-    budgetaryRequirements = PostBudgetaryRequirementsItemsSerializer(many=True)
-    projectActivities = PostProjectActivitiesSerializer(many=True)
-    loadingOfTrainers = PostLoadingOfTrainersSerializer(many=True)
-    signatories = PostSignatoriesSerializer(many=True)
-    proponents = PostProponentsSerializer(many=True)
+    targetGroups = TargetGroupSerializer(many=True)
+    goalsAndObjectives = GoalsAndObjectivesSerializer(many=True)
+    monitoringPlanSchedules = MonitoringPlanAndScheduleSerializer(many=True)
+    evaluationAndMonitorings = EvaluationAndMonitoringSerializer(many=True)
+    budgetaryRequirements = BudgetaryRequirementsItemsSerializer(many=True)
+    projectActivities = ProjectActivitiesSerializer(many=True)
+    loadingOfTrainers = LoadingOfTrainersSerializer(many=True)
+    signatories = SignatoriesSerializer(many=True)
+    proponents = ProponentsSerializer(many=True)
 
     class Meta(object):
         model = Project
