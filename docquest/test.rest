@@ -38,7 +38,10 @@ Authorization: Token 605bcb7594044106d834bc23e31120d69aca0f78
     "program": "Agriculture and Food Security",
     "accreditationLevel": "Level 3",
     "college": "College of Agriculture",
-    "projectLocationID": 1,
+    "projectLocationID": {
+      "street": "5th Street",
+      "barangayID": 1
+    },
     "agency": [1],
     "targetImplementation": "2024-12-01",
     "totalHours": 120.5,
@@ -298,21 +301,21 @@ Content-Type: application/json
 
 ###
 
-GET http://127.0.0.1:8000/get_provinces
+GET http://127.0.0.1:8000/get_provinces/1/
 Content-Type: application/json
 
 {}
 
 ###
 
-GET http://127.0.0.1:8000/get_cities
+GET http://127.0.0.1:8000/get_cities/1/
 Content-Type: application/json
 
 {}
 
 ###
 
-GET http://127.0.0.1:8000/get_barangays
+GET http://127.0.0.1:8000/get_barangays/1/
 Content-Type: application/json
 
 {}

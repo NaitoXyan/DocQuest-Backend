@@ -138,6 +138,11 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = ['addressID', 'street', 'barangay']
 
+class PostAddressSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Address
+        fields = ['street', 'barangayID']
+
 class PartnerAgencySerializer(serializers.ModelSerializer):
     class Meta(object):
         model = PartnerAgency
@@ -196,9 +201,9 @@ class GetProjectSerializer(serializers.ModelSerializer):
 
 class PostProjectSerializer(serializers.ModelSerializer):
     userID = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
-    projectLocationID = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
     agency = serializers.PrimaryKeyRelatedField(queryset=PartnerAgency.objects.all(), many=True)
 
+    projectLocationID = PostAddressSerializer()
     targetGroups = TargetGroupSerializer(many=True)
     goalsAndObjectives = GoalsAndObjectivesSerializer(many=True)
     monitoringPlanSchedules = MonitoringPlanAndScheduleSerializer(many=True)
@@ -221,7 +226,10 @@ class PostProjectSerializer(serializers.ModelSerializer):
             'loadingOfTrainers', 'signatories', 'proponents'
         ]
 
-    def create(self, validated_data): 
+    def create(self, validated_data):
+        address_data = validated_data.pop('projectLocation')
+        projectLocationID = Address.objects.create(**address_data)
+
         targetGroups_data = validated_data.pop('targetGroups')
         goalsAndObjectives_data = validated_data.pop('goalsAndObjectives')
         monitoringPlanSchedules_data = validated_data.pop('monitoringPlanSchedules')
@@ -234,7 +242,7 @@ class PostProjectSerializer(serializers.ModelSerializer):
 
         agency_data = validated_data.pop('agency')
 
-        project = Project.objects.create(**validated_data)
+        project = Project.objects.create(projectLocationID=projectLocationID, **validated_data)
 
         project.agency.set(agency_data)
 

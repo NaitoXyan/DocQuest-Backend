@@ -121,9 +121,14 @@ def get_regions(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def get_provinces(request):
+def get_provinces(request, regionID):
     
-    provinces = Province.objects.all()
+    try:
+        region = Region.objects.get(pk=regionID)
+    except Region.DoesNotExist:
+        return Response({"detail": "Region not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+    provinces = Province.objects.filter(regionID=region)
 
     provinces_serializer = GetProvinceSerializer(provinces, many=True)
 
@@ -131,9 +136,14 @@ def get_provinces(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def get_cities(request):
+def get_cities(request, provinceID):
 
-    cities = City.objects.all()
+    try:
+        province = Province.objects.get(pk=provinceID)
+    except Province.DoesNotExist:
+        return Response({"detail": "Province not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    cities = City.objects.filter(provinceID=province)
 
     cities_serializer = GetCitySerializer(cities, many=True)
 
@@ -141,9 +151,14 @@ def get_cities(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def get_barangays(request):
+def get_barangays(request, cityID):
 
-    barangays = Barangay.objects.all()
+    try:
+        city = City.objects.get(pk=cityID)
+    except City.DoesNotExist:
+        return Response({"detail": "City not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    barangays = Barangay.objects.filter(cityID=city)
 
     barangays_serializer = GetBarangaySerializer(barangays, many=True)
 
