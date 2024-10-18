@@ -165,6 +165,18 @@ def get_barangays(request, cityID):
     return Response(barangays_serializer.data)
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
+def get_project_status(request, pk):
+    # Get all projects for the user with userID equal to pk
+    projects = Project.objects.filter(userID=pk)
+
+    # Serialize the project data
+    serializer = GetProjectStatusSerializer(projects, many=True)
+
+    # Return the serialized data as a JSON response
+    return Response(serializer.data)
+
+@api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def test_token(request):

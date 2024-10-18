@@ -274,3 +274,8 @@ class PostProjectSerializer(serializers.ModelSerializer):
             Proponents.objects.create(project=project, **proponent_data)
 
         return project
+
+class GetProjectStatusSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = Project
+        fields = ['uniqueCode', 'projectTitle', 'dateCreated', 'status']

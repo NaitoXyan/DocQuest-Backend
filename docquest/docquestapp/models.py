@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from .managers import CustomUserManager
 from django.utils import timezone
 from django.contrib.auth.models import PermissionsMixin
+import datetime
 
 class Roles(models.Model):
     roleID = models.AutoField(primary_key=True)
@@ -92,6 +93,12 @@ class Effectivity(models.Model):
     moaID = models.ForeignKey(MOA, related_name='effectivity', on_delete=models.CASCADE)
 
 class Project(models.Model):
+    STATUS_CHOICES = [
+        ('approved', 'Approved'),
+        ('pending', 'Pending'),
+        ('rejected', 'Rejected'),
+    ]
+
     projectID = models.AutoField(primary_key=True)
     userID = models.ForeignKey(CustomUser, related_name='projectUser', on_delete=models.CASCADE)
     programCategory = models.CharField(max_length=50)
@@ -111,6 +118,21 @@ class Project(models.Model):
     beneficiaries = models.TextField()
     totalBudget = models.IntegerField()
     moaID = models.ForeignKey(MOA, related_name='projectMoa', on_delete=models.CASCADE, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    dateCreated = models.DateTimeField(auto_now_add=True)
+
+    uniqueCode = models.CharField(max_length=50, unique=True, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Ensure the object is saved first so we have a projectID and date_created
+        if not self.pk:
+            super().save(*args, **kwargs)
+
+        # If unique_code hasn't been set yet, generate it
+        if not self.uniqueCode:
+            # Create unique_code from pk and date_created
+            self.uniqueCode = f"{self.pk}-{self.dateCreated.strftime('%Y%m%d')}"
+            super().save(*args, **kwargs)
 
 class Signatories(models.Model):
     project = models.ForeignKey(Project, related_name='signatoryProject', on_delete=models.CASCADE)

@@ -30,7 +30,7 @@ class RolesAdmin(admin.ModelAdmin):
     form = RoleCreationForm
 
     fields = ["role", "code"]
-    list_display = ["roleID", "role"]
+    list_display = ["roleID", "role", "code"]
 
 class RegionAdmin(admin.ModelAdmin):
     fields = ["region"]

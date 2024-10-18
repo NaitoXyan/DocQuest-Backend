@@ -24,6 +24,7 @@ urlpatterns = [
 
     # get project
     path('get_project/<int:pk>/', views.get_project),
+    path('get_project_status/<int:pk>/', views.get_project_status),
 
     # get address
     path('get_regions', views.get_regions),
