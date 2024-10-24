@@ -1,9 +1,9 @@
 POST http://127.0.0.1:8000/signup
 Content-Type: application/json
 
-{ "email": "chalbert@gmail.com", "password": "testpass", "firstname": "Chalbert", "middlename": "Akut",
-    "lastname": "Reyes", "campus": "USTP-CDO", "college": "CITC", "department": "BSIT", "contactNumber": "09123456789",
-    "role": [1]
+{ "email": "william@gmail.com", "password": "testpass", "firstname": "William", "middlename": "Akut",
+    "lastname": "Thomas", "campus": "USTP-CDO", "college": "NO COLLEGE SELECTED", 
+    "department": "NO DEPARTMENT SELECTED", "contactNumber": "NO NUMBER", "role": [8]
 }
 
 ###
@@ -26,119 +26,224 @@ Authorization: Token 946d9449e71eee646961e26e1f44206b6ea0bd23
 # submit created proj
 POST http://127.0.0.1:8000/create_project
 Content-Type: application/json
-Authorization: Token 605bcb7594044106d834bc23e31120d69aca0f78
+Authorization: Token b1a379f6327fafea0a857e63a20a725b0db7b16d
 
 {
-    "userID": 1,
-    "programCategory": "Community Development",
-    "projectTitle": "Sustainable Agriculture Program",
-    "projectType": "Research",
-    "projectCategory": "Agriculture",
-    "researchTitle": "Organic Farming Techniques",
-    "program": "Agriculture and Food Security",
-    "accreditationLevel": "Level 3",
-    "college": "College of Agriculture",
+    "userID": 10,
+    "programCategory": "I-Share",
+    "projectTitle": "E-monitorMo OutreachActivity and Training at Kahigayonan 2024",
+    "projectType": "New Project",
+    "projectCategory": "Skills Training/Capacity Building",
+    "researchTitle": "E-monitorMo OutreachActivity and Training at Kahigayonan 2024",
+    "program": "BSIT and BSDS",
+    "accreditationLevel": "IV",
+    "college": "CITC",
+    "beneficiaries": "Out of School Youth Development Alliance (OSYDA)",
+    "targetImplementation": "2024-08-01",
+    "totalHours": 24,
+    "background": "The Out-of-School Youth Development Alliance (OSYDA) will be conducting its annual program “KAHIGAYONAN: Skills Expo & Enrollment and Job Fair” at Ayala Malls Centrio, Cagayan de Oro City on August 2024. This year's activity has been branded as “UY! IPORTUNIDAD para sa Kabatan-onan, Year 3”. In our continued support of their endeavors, the College of Information Technology and Computing spearheaded by Dr. Jocelyn Barbosa would like to conduct an outreach activity and training during the event, aimed at utilizing the eMonitorMo app developed last year in a partnership with the University of Science and Technology of Southern Philippines and USAID. The team sees this as an opportunity to not only strengthen the college's partnership with OSYDA but also improve the services offered to our city's youth population.",
+    "projectComponent": "Participant Orientation and Registration into the eMonitorMo App",
+    "targetScope": "Ayala Malls Centrio, CM Recto Avenue/Kahig:ayonan Participants",
+    "ustpBudget": 12000,
+    "partnerAgencyBudget": 0,
+    "totalBudget": 12000,
+    "proponents": [
+        {
+            "proponent": "Jocelyn B. Barbosa, Ph.D."
+        },
+        {
+            "proponent": "Jomar Llevado, MIT"
+        },
+        {
+            "proponent": "Quinto Tan Jr., MIT"
+        },
+        {
+            "proponent": "Charlane Vallar, MIT"
+        },
+        {
+            "proponent": "Dario Minoza"
+        },
+        {
+            "proponent": "Matthew Maulion, MSc"
+        },
+        {
+            "proponent": "Select Student Leaders"
+        }
+    ],
     "projectLocationID": {
-      "street": "5th Street",
+      "street": "Ayala Malls Centrio",
       "barangayID": 1
     },
     "agency": [1],
-    "targetImplementation": "2024-12-01",
-    "totalHours": 120.5,
-    "background": "This project aims to promote sustainable agriculture through organic farming techniques.",
-    "projectComponent": "Training and development of organic farming methods.",
-    "beneficiaries": "Local farmers and rural communities.",
-    "totalBudget": 500000,
-    "targetGroups": [
-        {
-            "targetGroup": "Farmers"
-        },
-        {
-            "targetGroup": "Local Government Units"
-        }
-    ],
     "goalsAndObjectives": [
         {
-            "goalsAndObjectives": "Increase agricultural productivity using organic methods."
-        },
-        {
-            "goalsAndObjectives": "Provide training to local farmers on sustainable farming practices."
-        }
-    ],
-    "monitoringPlanSchedules": [
-        {
-            "approach": "On-site visits and evaluations.",
-            "dataGatheringStrategy": "Surveys and farmer interviews.",
-            "schedule": "Every quarter of the year.",
-            "implementationPhase": "Training and farming stages."
-        }
-    ],
-    "evaluationAndMonitorings": [
-        {
-            "projectSummary": "The project aims to improve food security in rural areas.",
-            "indicators": "Increased yield, adoption of organic methods.",
-            "meansOfVerification": "Farmers' reports and crop analysis.",
-            "risksAssumptions": "Weather and pest challenges.",
-            "type": "Mid-term evaluation."
-        }
-    ],
-    "budgetaryRequirements": [
-        {
-            "itemName": "Organic Fertilizers",
-            "ustpAmount": 10000,
-            "partnerAmount": 5000,
-            "totalAmount": 15000
-        },
-        {
-            "itemName": "Training Materials",
-            "ustpAmount": 2000,
-            "partnerAmount": 1000,
-            "totalAmount": 3000
+            "goalsAndObjectives": "This extension activity aimsto orient, train and register the participant so the “KAHIGAYONAN” program in order to familiarize them with the services that the eMonitorMo app delivers."
         }
     ],
     "projectActivities": [
         {
-            "objective": "Train farmers in organic farming techniques.",
-            "involved": "Agriculture trainers and local farmers.",
-            "targetDate": "2024-11-01",
-            "personResponsibleID": "2"
+            "objective": "Orient and register eligible participants of the Kahigayonan Skills Expo event to the eMonitorMo Application",
+            "involved": "Application Orientation and Registration",
+            "targetDate": "2024-08-01",
+            "personResponsible": "Dr. Jocelyn B. Barbosa, Quinto Tan, MIT, Charlene Vallar, MIT, Jomar Llevado, MIT"
+        }
+    ],
+    "projectManagementTeam": [
+      {
+        "name": "Dr. Jocelyn B. Barbosa"
+      },
+      {
+        "name": "Quinto Tan, MIT"
+      },
+      {
+        "name": "Charlene Vallar, MIT"
+      },
+      {
+        "name": "Jomar Llevado, MIT"
+      }
+    ],
+    "budgetRequirements": [
+        {
+            "itemName": "Honorarium",
+            "ustpAmount": 12000,
+            "partnerAmount": 0,
+            "totalAmount": 12000
+        }
+    ],
+    "evaluationAndMonitorings": [
+        {
+            "projectSummary": "Increase access to opportunities for the youth",
+            "indicators": "Number of registered eMonitorMo users",
+            "meansOfVerification": "Data Generated from eMonitorMo Application",
+            "type": "Goal"
+        },
+        {
+            "projectSummary": "Registered Youth in eMonitorMo",
+            "indicators": "Number of accounts added into the application",
+            "type": "Outputs"
+        },
+        {
+            "projectSummary": "Orientation and Registration",
+            "type": "Activities"
+        }
+    ],
+    "monitoringPlanSchedules": [
+        {
+            "approach": "Trainings Need Assessment/Pre-training Survey",
+            "dataGatheringStrategy": "Survey Questionnaire, Interview with Key Informant or FGD",
+            "schedule": "A week after receiving training/extension request",
+            "implementationPhase": "Before Project Implementation"
+        },
+        {
+            "approach": "Pretest and posttest Skills Demo or Competency Assessment",
+            "dataGatheringStrategy": "Multiple Choice Questtionnaire, survey questionnaire, competency checklist",
+            "schedule": "During training proper",
+            "implementationPhase": "During Project Implementation"
+        },
+        {
+            "approach": "Effects of Project to Participants and Community Questionnaire Trainings Need Assessment",
+            "dataGatheringStrategy": "Survey Questionnaire, Interview with Key Informant or FGD",
+            "schedule": "May be periodically scheduled based on the objectives of the extension project (e.g. after 3 months, after 6 months, etc.)",
+            "implementationPhase": "After Project Implementation"
         }
     ],
     "loadingOfTrainers": [
         {
-            "faculty": "Agriculture Department Faculty",
-            "trainingLoad": "Organic farming training sessions.",
-            "hours": 40.0,
-            "ustpBudget": 50000,
-            "agencyBudget": 25000,
-            "totalBudgetRequirement": 75000
+            "faculty": "Dr. Jocelyn Barbosa",
+            "trainingLoad": "Introduction to E-Monitor and its role in developing the Youth",
+            "hours": 8,
+            "ustpBudget": 2400,
+            "agencyBudget": 0,
+            "totalBudgetRequirement": 1200
+        },
+        {
+            "faculty": "Charlane Vallar, MIT",
+            "trainingLoad": "Module 1: Services offered by the eMonitorMo Application",
+            "hours": 16,
+            "ustpBudget": 2400,
+            "agencyBudget": 0,
+            "totalBudgetRequirement": 2400
+        },
+        {
+            "faculty": "Quinto Tan, MIT",
+            "trainingLoad": "Module 2: Navigating the eMonitorMo Application (Web Platform)",
+            "hours": 16,
+            "ustpBudget": 2400,
+            "agencyBudget": 0,
+            "totalBudgetRequirement": 2400
+        },
+        {
+            "faculty": "Dario Minoza",
+            "trainingLoad": "Module 2: Navigating the eMonitorMo Application (Web Platform)",
+            "hours": 16,
+            "ustpBudget": 2400,
+            "agencyBudget": 0,
+            "totalBudgetRequirement": 2400
+        },
+        {
+            "faculty": "Matthew Maulion, MSc",
+            "trainingLoad": "Module 3: Navigating the eMonitorMo Application (Web Platform)",
+            "hours": 8,
+            "ustpBudget": 1800,
+            "agencyBudget": 0,
+            "totalBudgetRequirement": 1200
+        },
+        {
+            "faculty": "Jomar Llevado, MIT",
+            "trainingLoad": "Module 3: Navigating the eMonitorMo Application (Web Platform)",
+            "hours": 16,
+            "ustpBudget": 2400,
+            "agencyBudget": 0,
+            "totalBudgetRequirement": 2400
         }
     ],
     "signatories": [
         {
-            "userID": 2,
-            "approvalStatus": false
+            "userID": 11,
+            "approvalStatus": "none"
         },
         {
-            "userID": 3,
-            "approvalStatus": false
-        }
-    ],
-    "proponents": [
-        {
-            "proponent": "John Doe"
+            "userID": 12,
+            "approvalStatus": "none"
         },
         {
-            "proponent": "Jane Smith"
+            "userID": 13,
+            "approvalStatus": "none"
+        },
+        {
+            "userID": 14,
+            "approvalStatus": "none"
+        },
+        {
+            "userID": 15,
+            "approvalStatus": "none"
+        },
+        {
+            "userID": 16,
+            "approvalStatus": "none"
+        },
+        {
+            "userID": 17,
+            "approvalStatus": "none"
         }
     ]
 }
 
 ###
 
-GET http://127.0.0.1:8000/get_project/3/
+PATCH http://127.0.0.1:8000/update_signatory_status/15/
 Content-Type: application/json
-Authorization: Token 91d69e4cc1ff356353488851fa2db69efa1a1f0a
+Authorization: Token b1a379f6327fafea0a857e63a20a725b0db7b16d
+
+{
+    "approvalStatus": "approved"
+}
+
+###
+
+GET http://127.0.0.1:8000/get_project/9/
+Content-Type: application/json
+Authorization: Token b1a379f6327fafea0a857e63a20a725b0db7b16d
 
 ###
 
@@ -172,128 +277,6 @@ Content-Type: application/json
 
 ###
 
-POST http://127.0.0.1:8000/create_project
-Content-Type: application/json
-
-{
-  "agencyAddress": {
-    "street": "123 Main St",
-    "barangay": "Barangay 1",
-    "city": "City Name",
-    "province": "Province Name",
-    "postal_code": "12345"
-  },
-  "projectAddress": {
-    "street": "456 Project Ave",
-    "barangay": "Barangay 2",
-    "city": "Another City",
-    "province": "Another Province",
-    "postal_code": "67890"
-  },
-  "agency": {
-    "agencyName": "Partner Agency Name"
-  },
-  "project": {
-    "programCategory": "Community Development",
-    "projectTitle": "Empowerment Through Education",
-    "projectType": "Training",
-    "projectCategory": "Education",
-    "researchTitle": "Improving Literacy in Rural Areas",
-    "program": "Adult Education Program",
-    "accreditationLevel": "Level 1",
-    "college": "College of Education",
-    "targetImplementation": "2024-09-01",
-    "totalHours": 120.5,
-    "background": "This project aims to improve literacy in rural communities.",
-    "projectComponent": "Training, Workshops",
-    "beneficiaries": "Adults in rural areas",
-    "totalBudget": 500000
-  },
-  "proponents": {
-    "userID": 1
-  },
-  "goalsAndObjectives": [
-    {
-      "goalsAndObjectives": "Improve literacy rates by 20% within one year."
-    },
-    {
-      "goalsAndObjectives": "Conduct 10 workshops on basic reading and writing skills."
-    }
-  ],
-  "projectActivities": [
-    {
-      "objective": "Organize workshops",
-      "involved": "Trainers, Volunteers",
-      "targetDate": "2024-10-01",
-      "personResponsibleID": 1
-    },
-    {
-      "objective": "Distribute educational materials",
-      "involved": "Volunteers",
-      "targetDate": "2024-11-01",
-      "personResponsibleID": 2
-    }
-  ],
-  "budgetRequirements": [
-    {
-      "itemName": "Training Materials",
-      "ustpAmount": 10000,
-      "partnerAmount": 5000,
-      "totalAmount": 15000
-    },
-    {
-      "itemName": "Venue Rental",
-      "ustpAmount": 20000,
-      "partnerAmount": 10000,
-      "totalAmount": 30000
-    }
-  ],
-  "evalAndMonitoring": [
-    {
-      "projectSummary": "Evaluation of project impact on literacy.",
-      "indicators": "Literacy rate improvement, participant feedback",
-      "meansOfVerification": "Surveys, Tests",
-      "risksAssumptions": "Attendance may vary due to weather.",
-      "type": "Qualitative"
-    }
-  ],
-  "monitoringPlanAndSchedule": [
-    {
-      "approach": "Monthly progress meetings",
-      "dataGatheringStrategy": "Interviews and surveys",
-      "schedule": "Monthly",
-      "implementationPhase": "Throughout project duration"
-    }
-  ],
-  "targetGroup": [
-    {
-      "targetGroup": "Adults in rural areas"
-    }
-  ],
-  "loadingOfTrainers": [
-    {
-      "userID": 3,
-      "trainingLoad": "Full-time",
-      "hours": 40,
-      "ustpBudget": 20000,
-      "agencyBudget": 10000,
-      "totalBudgetRequirement": 30000
-    }
-  ],
-  "signatories": [
-    {
-      "userID": 2,
-      "approvalStatus": true
-    },
-    {
-      "userID": 3,
-      "approvalStatus": false
-    }
-  ]
-}
-
-###
-
 GET http://127.0.0.1:8000/get_regions
 Content-Type: application/json
 
@@ -322,7 +305,7 @@ Content-Type: application/json
 
 ###
 
-GET http://127.0.0.1:8000/get_project_status/1/
+GET http://127.0.0.1:8000/get_project_status/10/
 Content-Type: application/json
 
 {}

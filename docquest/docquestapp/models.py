@@ -116,8 +116,8 @@ class Project(models.Model):
     background = models.TextField() #12
     projectComponent = models.TextField() #13
     targetScope = models.TextField() #14
-    ustpBudget = models.IntegerField() #15
-    partnerAgencyBudget = models.IntegerField() #16
+    ustpBudget = models.IntegerField(default=0) #15
+    partnerAgencyBudget = models.IntegerField(default=0) #16
     totalBudget = models.IntegerField() #17
     projectLocationID = models.ForeignKey(Address, related_name='projectLocation', on_delete=models.CASCADE) #a2
     moaID = models.ForeignKey(MOA, related_name='projectMoa', on_delete=models.CASCADE, null=True)
@@ -129,24 +129,22 @@ class Project(models.Model):
 
     uniqueCode = models.CharField(max_length=255, unique=True, blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        # Ensure the object is saved first so we have a projectID and date_created
-        if not self.pk:
-            super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     # Save the instance first to ensure projectID is generated.
+    #     super(Project, self).save(*args, **kwargs)
 
-        # If unique_code hasn't been set yet, generate it
-        if not self.uniqueCode:
-            # Create unique_code from pk and date_created
-            self.uniqueCode = f"{self.pk}-{self.dateCreated.strftime('%Y%m%d')}"
-        
-        # Set project status based on routingProgress
-        if self.routingProgress >= 7:
-            self.status = 'approved'
-        elif self.status != 'rejected':  # Do not change to pending if already rejected
-            self.status = 'pending'
+    #     # Generate the unique code if it hasn't been set yet.
+    #     if not self.uniqueCode:
+    #         self.uniqueCode = f"{self.projectID}-{self.dateCreated.strftime('%Y%m%d')}"
 
-        super().save(*args, **kwargs)
+    #     # Update project status based on routingProgress
+    #     if self.routingProgress >= 7:
+    #         self.status = 'approved'
+    #     elif self.status != 'rejected':  # Do not change to pending if already rejected
+    #         self.status = 'pending'
 
+    #     # Save the instance again if there are changes.
+    #     super(Project, self).save(*args, **kwargs)
 
 class Signatories(models.Model):
     APPROVAL_CHOICES = [
@@ -162,10 +160,10 @@ class Signatories(models.Model):
 
     def generate_signature_code(self):
         """
-        Generate the signature code in the format roleId-userId-projectId-date+checksum.
+        Generate the signature code in the format userId-projectId-date+checksum.
         """
         date_str = self.project.dateCreated.strftime('%Y%m%d')  # Convert dateCreated to YYYYMMDD
-        code_without_checksum = f"{self.roleID}-{self.userID.pk}-{self.project.projectID}-{date_str}"
+        code_without_checksum = f"{self.userID.pk}-{self.project.projectID}-{date_str}"
         checksum = self.calculate_checksum(code_without_checksum)
         return f"{code_without_checksum}+{checksum}"
 
@@ -176,12 +174,12 @@ class Signatories(models.Model):
         return sum(ord(char) for char in code) % 10  # Simple checksum (mod 10)
 
     def save(self, *args, **kwargs):
-        # Generate the signatureCode based on the required format
-        if not self.signatureCode:
-            self.signatureCode = self.generate_signature_code()
-
         # Handle approval status logic
-        if self.approvalStatus == 'approved' and not self.pk:
+        if self.approvalStatus == 'approved':
+            # Generate the signatureCode only when approvalStatus is approved
+            if not self.signatureCode:
+                self.signatureCode = self.generate_signature_code()
+
             # Increment the routingProgress of the associated project
             self.project.routingProgress += 1
 
@@ -194,10 +192,11 @@ class Signatories(models.Model):
         # Save the project with the updated routingProgress and status
         self.project.save()
 
+        # Call the super method to save the Signatories instance
         super(Signatories, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.signatureCode
+        return self.signatureCode if self.signatureCode else "No signature code"
 
 class Proponents(models.Model): #a1
     project = models.ForeignKey(Project, related_name='proponent', on_delete=models.CASCADE)
@@ -223,7 +222,7 @@ class ProjectActivities(models.Model): #a6
     objective = models.TextField()
     involved = models.TextField()
     targetDate = models.DateField()
-    personResponsible = models.CharField(max_length=50)
+    personResponsible = models.TextField()
     project = models.ForeignKey(Project, related_name='projectActivities', on_delete=models.CASCADE)
 
 class ProjectManagementTeam(models.Model): #a7
@@ -240,11 +239,11 @@ class BudgetRequirementsItems(models.Model): #a8
 
 class EvaluationAndMonitoring(models.Model): #a9
     EAMID = models.AutoField(primary_key=True)
-    projectSummary = models.TextField()
-    indicators = models.TextField()
-    meansOfVerification = models.TextField()
-    risksAssumptions = models.TextField()
-    type = models.CharField(max_length=100)
+    projectSummary = models.TextField(default="Empty")
+    indicators = models.TextField(default="Empty")
+    meansOfVerification = models.TextField(default="Empty")
+    risksAssumptions = models.TextField(default="Empty")
+    type = models.CharField(max_length=100, default="Empty")
     project = models.ForeignKey(Project, related_name='evalAndMonitoring', on_delete=models.CASCADE)
 
 class MonitoringPlanAndSchedule(models.Model): #a10

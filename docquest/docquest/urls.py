@@ -26,6 +26,9 @@ urlpatterns = [
     path('get_project/<int:pk>/', views.get_project),
     path('get_project_status/<int:pk>/', views.get_project_status),
 
+    # update signatory sa project
+    path('update_signatory_status/<int:signatory_id>/', views.update_signatory_status),
+
     # get address
     path('get_regions', views.get_regions),
     path('get_provinces/<int:regionID>/', views.get_provinces),

@@ -175,28 +175,27 @@ class GetProjectLeaderSerializer(serializers.ModelSerializer):
 
 class GetProjectSerializer(serializers.ModelSerializer):
     userID = GetProjectLeaderSerializer()
+    proponents = ProponentsSerializer(source='proponent', many=True)
     projectLocationID = AddressSerializer()
     agency = PartnerAgencySerializer(many=True)
-    
     goalsAndObjectives = GoalsAndObjectivesSerializer(many=True)
-    monitoringPlanSchedules = MonitoringPlanAndScheduleSerializer(source='monitoringPlanSched', many=True)
-    evaluationAndMonitorings = EvaluationAndMonitoringSerializer(source='evalAndMonitoring', many=True)
-    budgetRequirements = BudgetRequirementsItemsSerializer(source='budgetRequirements', many=True)
     projectActivities = ProjectActivitiesSerializer(many=True)
+    projectManagementTeam = ProjectManagementTeamSerializer(many=True)
+    budgetRequirements = BudgetRequirementsItemsSerializer(many=True)
+    evaluationAndMonitorings = EvaluationAndMonitoringSerializer(source='evalAndMonitoring', many=True)
+    monitoringPlanSchedules = MonitoringPlanAndScheduleSerializer(source='monitoringPlanSched', many=True)
     loadingOfTrainers = LoadingOfTrainersSerializer(many=True)
     signatories = SignatoriesSerializer(source='signatoryProject', many=True)
-    proponents = ProponentsSerializer(source='proponent', many=True)
 
     class Meta(object):
         model = Project
         fields = [
             'userID', 'programCategory', 'projectTitle', 'projectType',
-            'projectCategory', 'researchTitle', 'program', 'accreditationLevel',
-            'college', 'projectLocationID', 'agency', 'targetImplementation',
-            'totalHours', 'background', 'projectComponent', 'beneficiaries',
-            'totalBudget', 'goalsAndObjectives', 'monitoringPlanSchedules',
-            'evaluationAndMonitorings', 'budgetRequirements', 'projectActivities',
-            'loadingOfTrainers', 'signatories', 'proponents'
+            'projectCategory', 'researchTitle', 'program', 'accreditationLevel', 'college', 'beneficiaries',  
+            'targetImplementation', 'totalHours', 'background', 'projectComponent', 'targetScope',
+            'ustpBudget', 'partnerAgencyBudget', 'totalBudget', 'proponents', 'projectLocationID',
+            'agency', 'goalsAndObjectives', 'projectActivities', 'projectManagementTeam', 'budgetRequirements',
+            'evaluationAndMonitorings', 'monitoringPlanSchedules', 'loadingOfTrainers', 'signatories', 'dateCreated'
         ]
 
 class PostProjectSerializer(serializers.ModelSerializer):

@@ -89,13 +89,18 @@ def create_project(request):
     serializer = PostProjectSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save()
+        project = serializer.save()
+
+        if project.dateCreated and not project.uniqueCode:
+            project.uniqueCode = f"{project.projectID}-{project.dateCreated.strftime('%Y%m%d')}"
+        project.save()
+
         return Response({"message": "Project successfuly created"}, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def get_project(request, pk): 
     user = request.user  # Get the authenticated user
 
@@ -107,6 +112,33 @@ def get_project(request, pk):
 
     project_serializer = GetProjectSerializer(instance=project)
     return Response(project_serializer.data)
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_signatory_status(request, signatory_id):
+    try:
+        # Fetch the Signatories instance by ID
+        signatory = Signatories.objects.get(pk=signatory_id)
+    except Signatories.DoesNotExist:
+        return Response({"error": "Signatory not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Get the new approval status from the request data
+    new_status = request.data.get('approvalStatus')
+
+    if new_status not in dict(Signatories.APPROVAL_CHOICES).keys():
+        return Response({"error": "Invalid approval status."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Update the approval status
+    signatory.approvalStatus = new_status
+    
+    # If the new status is approved, generate the signature code
+    if new_status == 'approved':
+        signatory.signatureCode = signatory.generate_signature_code()
+
+    # Save the updated signatory instance
+    signatory.save()
+
+    return Response({"message": "Approval status updated successfully.", "signatureCode": signatory.signatureCode}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
