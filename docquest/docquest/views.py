@@ -95,6 +95,92 @@ def create_role(request):
 
     return Response(role_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_projects_to_review(request):
+    user = request.user
+
+    # Fetch all pending reviews assigned to the user
+    reviews = Review.objects.filter(
+        reviewedByID=user,
+        reviewStatus='pending'
+    )
+
+    review_data = []
+    for review in reviews:
+        # Resolve the associated source object using GenericForeignKey
+        related_object = review.source  # Resolves the `GenericForeignKey`
+
+        # Add project details if the related object exists and is a project
+        if related_object and isinstance(related_object, Project):  # Assuming `Project` is the related model
+            review_data.append({
+                "reviewID": review.reviewID,
+                "projectID": related_object.projectID,
+                "projectTitle": related_object.projectTitle,  # Assuming `Project` has `projectTitle`
+                "reviewStatus": review.reviewStatus,
+                "sequence": review.sequence,
+            })
+
+    return Response(review_data, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def review_project(request):
+    try:
+        review_id = request.data.get('reviewID')
+        action = request.data.get('action')  # 'approve' or 'deny'
+        comment = request.data.get('comment', '')  # Optional comment
+
+        # Validate input
+        if action not in ['approve', 'deny']:
+            return Response({"error": "Invalid action specified"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Fetch the review
+        review = Review.objects.get(reviewID=review_id, reviewedByID=request.user)
+
+        # Update review status
+        if action == 'approve':
+            review.reviewStatus = 'approved'
+        elif action == 'deny':
+            review.reviewStatus = 'rejected'
+
+        review.comment = comment
+        review.save()
+
+        # Handle workflow progression for approvals
+        if action == 'approve':
+            # Check if all reviews in the current sequence are approved
+            current_sequence_reviews = Review.objects.filter(
+                source_id=review.source_id,
+                content_type=review.content_type,
+                sequence=review.sequence
+            )
+            if all(r.reviewStatus == 'approved' for r in current_sequence_reviews):
+                # Activate the next sequence of reviews
+                next_sequence_reviews = Review.objects.filter(
+                    source_id=review.source_id,
+                    content_type=review.content_type,
+                    sequence=review.sequence + 1,
+                    reviewStatus='pending'
+                )
+                next_sequence_reviews.update(reviewStatus='pending')
+
+                # Notify the next reviewers
+                for next_review in next_sequence_reviews:
+                    Notification.objects.create(
+                        userID=next_review.reviewedByID,
+                        content_type=next_review.content_type,
+                        source_id=next_review.source_id,
+                        message='A project is ready for your review.'
+                    )
+
+        return Response({"message": f"Review successfully {action}ed."}, status=status.HTTP_200_OK)
+
+    except Review.DoesNotExist:
+        return Response({"error": "Review not found or not assigned to you"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": f"An error occurred: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_project(request):
@@ -146,7 +232,7 @@ def create_project(request):
                 program_chair_ids = college.get('programChairs', [])
                 dean_id = college.get('collegeDean')
 
-                # Add reviews for program chairs
+                # Add reviews for program chairs (same sequence)
                 for chair_id in program_chair_ids:
                     review_data.append({
                         'contentOwnerID': request.user.userID,
@@ -155,10 +241,10 @@ def create_project(request):
                         'reviewedByID': chair_id,
                         'collegeID': collegeID,
                         'reviewStatus': 'pending',
-                        'sequence': sequence_counter,
+                        'sequence': sequence_counter,  # Sequence for program chairs
                     })
 
-                # Add review for college dean
+                # Add review for college dean (next sequence after chairs)
                 review_data.append({
                     'contentOwnerID': request.user.userID,
                     'content_type': content_type.id,
@@ -166,10 +252,10 @@ def create_project(request):
                     'reviewedByID': dean_id,
                     'collegeID': collegeID,
                     'reviewStatus': 'pending',
-                    'sequence': sequence_counter,  # Same sequence for program chairs and dean
+                    'sequence': sequence_counter + 1,  # Sequence for dean after chairs
                 })
 
-                sequence_counter += 1  # Increment sequence for the next college
+                sequence_counter += 2  # Increment sequence for the next college
 
             review_serializer = ReviewSerializer(data=review_data, many=True)
             if review_serializer.is_valid():
@@ -188,23 +274,39 @@ def create_project(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Create notifications for director and staff
+        # Create notifications for the first reviewer in the sequence
         try:
-            director_staff_users = CustomUser.objects.filter(
-                role__code__in=['ecrd', 'estf']
-            ).distinct()
+            # Identify the first reviewer for the project
+            first_review = Review.objects.filter(
+                source_id=project.projectID, 
+                sequence=1,  # First sequence in the review workflow
+                reviewStatus='pending'  # Ensure it targets pending reviews
+            ).first()
 
-            notifications = [
-                Notification(
-                    userID=user,
+            if first_review:
+                # Notify the first reviewer
+                Notification.objects.create(
+                    userID=first_review.reviewedByID,
                     content_type=content_type,
                     source_id=project.projectID,
-                    message='New project to review'
+                    message='A new project is awaiting your review.'
                 )
-                for user in director_staff_users
-            ]
+            else:
+                # Fallback: Notify admin/staff if no first reviewer found
+                director_staff_users = CustomUser.objects.filter(
+                    role__code__in=['ecrd', 'estf']
+                ).distinct()
 
-            Notification.objects.bulk_create(notifications)
+                notifications = [
+                    Notification(
+                        userID=user,
+                        content_type=content_type,
+                        source_id=project.projectID,
+                        message='No reviewers found for the project. Please assign one.'
+                    )
+                    for user in director_staff_users
+                ]
+                Notification.objects.bulk_create(notifications)
 
         except Exception as e:
             project.delete()

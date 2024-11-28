@@ -11,7 +11,7 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/auth/token/login/
 Content-Type: application/json
 
-{ "email": "chalbert@gmail.com", "password": "testpass"}
+{ "email": "bsitchair@gmail.com", "password": "testpass"}
 
 ###
 
@@ -51,12 +51,12 @@ Authorization: Token b1a379f6327fafea0a857e63a20a725b0db7b16d
 # submit created proj
 POST http://127.0.0.1:8000/create_project
 Content-Type: application/json
-Authorization: Token e6e6593e6d04309abb793f4b5f32494093226458
+Authorization: Token 51515da38c2cdbfdd713af87463359545004643c
 
 {
     "userID": 10,
     "programCategory": [1, 2],
-    "projectTitle": "Test TODAY E-monitorMo OutreachActivity and Training at Kahigayonan 2024",
+    "projectTitle": "TestTest sakit E-monitorMo OutreachActivity and Training at Kahigayonan 2024",
     "projectType": "New Project",
     "projectCategory": [1, 2],
     "researchTitle": "E-monitorMo OutreachActivity and Training at Kahigayonan 2024",
@@ -240,6 +240,16 @@ Authorization: Token e6e6593e6d04309abb793f4b5f32494093226458
         {
             "name": "William Thomas",
             "title": "Chancellor, USTP CDO"
+        }
+    ],
+    "deliverables": [
+        1,2,3,4,5,6,7,8,9,10,11,12,13,14
+    ],
+    "approvers": [
+        {
+            "collegeDean": 24,
+            "collegeID": 1,
+            "programChairs": [25, 26] 
         }
     ]
 }
@@ -634,6 +644,24 @@ Authorization: Token c2f1e401a8449e8635f5c74f2dd0dda51f008db4
 
 ###
 
+GET http://127.0.0.1:8000/get_projects_to_review
+Content-Type: application/json
+Authorization: Token f25df1958b33fed5fca0f18b828e152d49fc5d77
+
+###
+
+POST http://127.0.0.1:8000/review_project
+Content-Type: application/json
+Authorization: Token 82df2da1fc75d66af76d7d9bfc187077474a7a95
+
+{
+    "reviewID": 56,
+    "action": "approve",
+    "comment": "Looks good!"
+}
+
+###
+
 GET http://127.0.0.1:8000/get_users_exclude_roles
 Content-Type: application/json
 Authorization: Token e6e6593e6d04309abb793f4b5f32494093226458
@@ -763,7 +791,7 @@ Content-Type: application/json
 
 GET http://127.0.0.1:8000/get_review
 Content-Type: application/json
-Authorization: Token 6e868e702d9863622ba0b85dac36ba11dc4391d8
+Authorization: Token f25df1958b33fed5fca0f18b828e152d49fc5d77
 
 {}
 
