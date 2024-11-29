@@ -430,6 +430,7 @@ class ProjectReviewSerializer(serializers.ModelSerializer):
     projectTitle = serializers.SerializerMethodField()
     dateCreated = serializers.SerializerMethodField()
     content_type_name = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
@@ -437,7 +438,7 @@ class ProjectReviewSerializer(serializers.ModelSerializer):
             'reviewID', 'contentOwnerID', 'firstname', 'lastname',
             'content_type', 'content_type_name', 'source_id', 'projectTitle',
             'dateCreated', 'reviewedByID', 'reviewStatus', 'reviewDate', 'comment',
-            'approvalCounter', 'reviewerResponsible'
+            'sequence', 'status'
         ]
 
     def get_firstname(self, obj):
@@ -457,6 +458,9 @@ class ProjectReviewSerializer(serializers.ModelSerializer):
     def get_content_type_name(self, obj):
         # Fetch and return the name of the content type (e.g., 'Project' or 'MOA')
         return obj.content_type.model
+    
+    def get_status(self, obj):
+        return getattr(obj.source, 'status', None)
 
 class DocumentPDFSerializer(serializers.ModelSerializer):
     content_type = serializers.SlugRelatedField(
@@ -769,3 +773,40 @@ class GetProgramChairSerializer(serializers.ModelSerializer):
     class Meta:
         model = Program
         fields = ['programChair']
+
+class GetAllProjectsSerializer(serializers.ModelSerializer):
+    program = ProgramSerializer(many=True)
+
+    class Meta:
+        model = Project
+        fields = ['status', 'dateCreated', 'program']
+
+class GetReviewsWithProjectIDSerializer(serializers.ModelSerializer):
+    reviewedByID = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
+    college = serializers.SerializerMethodField()
+    program = serializers.SerializerMethodField()
+    fullname = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Review
+        fields = [
+            'reviewID', 'reviewedByID', 'college', 'program', 'fullname',
+            'reviewStatus', 'reviewDate', 'comment', 'approvalCounter', 'reviewerResponsible'
+        ]
+
+    def get_college(self, obj):
+        # Retrieve the related college if available
+        if obj.collegeID:
+            return obj.collegeID.title
+        return None
+
+    def get_program(self, obj):
+        # Check if the reviewer is associated with a program
+        reviewer = obj.reviewedByID
+        program = Program.objects.filter(programChair=reviewer).first()
+        return program.title if program else None
+
+    def get_fullname(self, obj):
+        # Concatenate the reviewer's full name
+        reviewer = obj.reviewedByID
+        return f"{reviewer.firstname} {reviewer.middlename} {reviewer.lastname}".strip()

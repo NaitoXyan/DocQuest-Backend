@@ -138,8 +138,8 @@ class MOA(models.Model):
 
     moaID = models.AutoField(primary_key=True)
     userID = models.ForeignKey(CustomUser, related_name='moaUser', on_delete=models.CASCADE)
-    partyADescription = models.TextField()
-    partyBDescription = models.TextField()
+    partyDescription = models.TextField()
+    # partyBDescription = models.TextField()
     coverageAndEffectivity = models.TextField()
     confidentialityClause = models.TextField()
     termination = models.TextField()
