@@ -255,6 +255,11 @@ class SecondPartySerializer(serializers.ModelSerializer):
         model = SecondParty
         fields = ['secondPartyID', 'name', 'title']
 
+class ThirdPartySerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = ThirdParty
+        fields = ['thirdPartyID', 'name', 'title']
+
 class WitnessesSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Witnesses
@@ -265,13 +270,14 @@ class GetSpecificMoaSerializer(serializers.ModelSerializer):
     partyObligation = PartyObligationSerializer(many=True)
     firstParty = FirstPartySerializer(many=True)
     secondParty = SecondPartySerializer(many=True)
+    thirdParty = ThirdPartySerializer(many=True)
     witnesses = WitnessesSerializer(many=True)
     
     class Meta(object):
         model = MOA
         fields = [
             'moaID', 'partyADescription', 'partyBDescription', 'partyCDescription', 'coverageAndEffectivity', 'confidentialityClause',
-            'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'witnesses'
+            'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'thirdParty', 'witnesses'
         ]
 
 class PostMOASerializer(serializers.ModelSerializer):
@@ -279,13 +285,14 @@ class PostMOASerializer(serializers.ModelSerializer):
     partyObligation = PartyObligationSerializer(many=True)
     firstParty = FirstPartySerializer(many=True)
     secondParty = SecondPartySerializer(many=True)
+    thirdParty = ThirdPartySerializer(many=True)
     witnesses = WitnessesSerializer(many=True)
 
     class Meta:
         model = MOA
         fields = [
             'moaID', 'partyADescription', 'partyBDescription', 'partyCDescription', 'coverageAndEffectivity', 'confidentialityClause',
-            'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'witnesses'
+            'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'thirdParty', 'witnesses'
         ]
 
     def create(self, validated_data):
@@ -294,6 +301,7 @@ class PostMOASerializer(serializers.ModelSerializer):
         party_obligation_data = validated_data.pop('partyObligation')
         first_party_data = validated_data.pop('firstParty')
         second_party_data = validated_data.pop('secondParty')
+        third_party_data = validated_data.pop('thirdParty')
         witnesses_data = validated_data.pop('witnesses')
 
         # Create MOA instance
@@ -312,6 +320,9 @@ class PostMOASerializer(serializers.ModelSerializer):
         for second_party in second_party_data:
             SecondParty.objects.create(moaID=moa, **second_party)
         
+        for third_party in third_party_data:
+            ThirdParty.objects.create(moaID=moa, **third_party)
+        
         for witnesses in witnesses_data:
             Witnesses.objects.create(moaID=moa, **witnesses)
 
@@ -322,13 +333,14 @@ class UpdateMOASerializer(serializers.ModelSerializer):
     partyObligation = PartyObligationSerializer(many=True)
     firstParty = FirstPartySerializer(many=True)
     secondParty = SecondPartySerializer(many=True)
+    thirdParty = ThirdPartySerializer(many=True)
     witnesses = WitnessesSerializer(many=True)
 
     class Meta:
         model = MOA
         fields = [
             'moaID', 'partyADescription', 'partyBDescription', 'partyCDescription', 'coverageAndEffectivity', 'confidentialityClause',
-            'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'witnesses'
+            'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'thirdParty', 'witnesses'
         ]
     
     def update(self, instance, validated_data):
@@ -336,6 +348,7 @@ class UpdateMOASerializer(serializers.ModelSerializer):
         partyObligation_data = validated_data.pop('partyObligation')
         first_party_data = validated_data.pop('firstParty')
         second_party_data = validated_data.pop('secondParty')
+        third_party_data = validated_data.pop('thirdParty')
         witnesses_data = validated_data.pop('witnesses')
 
         for attr, value in validated_data.items():
@@ -347,6 +360,7 @@ class UpdateMOASerializer(serializers.ModelSerializer):
         instance.partyObligation.all().delete()
         instance.firstParty.all().delete()
         instance.secondParty.all().delete()
+        instance.thirdParty.all().delete()
         instance.witnesses.all().delete()
 
         # Create related instances
@@ -362,6 +376,9 @@ class UpdateMOASerializer(serializers.ModelSerializer):
         for second_party in second_party_data:
             SecondParty.objects.create(moaID=instance, **second_party)
         
+        for third_party in third_party_data:
+            ThirdParty.objects.create(moaID=instance, **third_party)
+
         for witnesses in witnesses_data:
             Witnesses.objects.create(moaID=instance, **witnesses)
         
@@ -468,7 +485,7 @@ class ProjectReviewSerializer(serializers.ModelSerializer):
     
     def get_status(self, obj):
         return getattr(obj.source, 'status', None)
-
+    
 class DocumentPDFSerializer(serializers.ModelSerializer):
     content_type = serializers.SlugRelatedField(
         queryset=ContentType.objects.all(),

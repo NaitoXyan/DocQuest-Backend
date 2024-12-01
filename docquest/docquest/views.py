@@ -999,6 +999,7 @@ def get_moa_reviews(request):
         try:
             project = Project.objects.get(moaID=moa)
             project_info = {
+                
                 'projectID': project.projectID,
                 'projectTitle': project.projectTitle
             }
@@ -1011,7 +1012,8 @@ def get_moa_reviews(request):
             'project': project_info,
             'reviewID': review.reviewID,
             'reviewStatus': review.reviewStatus,
-            'reviewerResponsible': review.reviewerResponsible
+            'reviewerResponsible': review.reviewerResponsible,
+            'contentType' : review.content_type
         })
     
     return Response(review_data, status=status.HTTP_200_OK)

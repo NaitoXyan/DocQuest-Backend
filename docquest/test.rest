@@ -23,6 +23,14 @@ Authorization: Token 4a4914e24b338c22543af3ed92cfa1f86af1ce12
 
 ###director
 
+GET http://127.0.0.1:8000/director_get_reviews
+Content-Type: application/json
+Authorization: Token 4a4914e24b338c22543af3ed92cfa1f86af1ce12
+
+{}
+
+###director
+
 POST http://127.0.0.1:8000/auth/token/logout/
 Content-Type: application/json
 Authorization: Token 946d9449e71eee646961e26e1f44206b6ea0bd23
