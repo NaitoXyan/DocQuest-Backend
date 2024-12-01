@@ -199,6 +199,12 @@ class SecondParty(models.Model):
     title = models.CharField(max_length=50)
     moaID = models.ForeignKey(MOA, related_name='secondParty', on_delete=models.CASCADE)
 
+class ThirdParty(models.Model):
+    thirdPartyID = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50)
+    title = models.CharField(max_length=50)
+    moaID = models.ForeignKey(MOA, related_name='thirdParty', on_delete=models.CASCADE)
+
 class Witnesses(models.Model):
     witnessID = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)

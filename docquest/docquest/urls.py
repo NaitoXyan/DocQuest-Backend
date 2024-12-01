@@ -102,6 +102,11 @@ urlpatterns = [
     path('get_program_to_campus', views.get_program_to_campus),
     path('coordinator_create_user/', views.coordinator_create_user),
 
+    # DIRECTOR AND VPALA
+    path('get_moa_reviews', views.get_moa_reviews),
+    path('director_review_moa', views.director_review_moa),
+    path('vpala_final_review_moa', views.vpala_final_review_moa),
+
     # get address
     path('get_regions', views.get_regions),
     path('get_provinces/<int:regionID>/', views.get_provinces),

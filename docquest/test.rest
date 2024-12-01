@@ -11,9 +11,17 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/auth/token/login/
 Content-Type: application/json
 
-{ "email": "bsitcoord@gmail.com", "password": "testpass"}
+{ "email": "mike@gmail.com", "password": "testpass"}
 
 ###
+
+GET http://127.0.0.1:8000/get_moa_reviews
+Content-Type: application/json
+Authorization: Token 4a4914e24b338c22543af3ed92cfa1f86af1ce12
+
+{}
+
+###director
 
 POST http://127.0.0.1:8000/auth/token/logout/
 Content-Type: application/json
@@ -513,7 +521,7 @@ Authorization: Token b1a379f6327fafea0a857e63a20a725b0db7b16d
 
 POST http://127.0.0.1:8000/create_moa
 Content-Type: application/json
-Authorization: Token b1a379f6327fafea0a857e63a20a725b0db7b16d
+Authorization: Token 6d2c0cecb6ecf3449eb2b28ee8f8c7a06336e759
 
 {
     "projectID": 5,
@@ -538,14 +546,8 @@ Authorization: Token b1a379f6327fafea0a857e63a20a725b0db7b16d
             "party": "party B"
         }
      ],
-    "effectivity": [
-        {
-            "effectivity": "effectibe until what day"
-        },
-        {
-            "effectivity": "epektib karon"
-        }
-    ],
+    "coverageAndEffectivity": "Yawa",
+    "confidentialityClause": "extra yawa",
     "firstParty": [
         {
             "name": "ATTY. DIONEL O ALBINA",
@@ -796,7 +798,7 @@ Authorization: Token 66fa1967750b39f81971c7cdcc7c2b052a1de715
 POST http://127.0.0.1:8000/auth/token/login/
 Content-Type: application/json
 
-{ "email": "bsitcoord@gmail.com", "password": "testpass"}
+{ "email": "mike@gmail.com", "password": "testpass"}
 
 ###
 
@@ -810,7 +812,7 @@ Authorization: Token 66fa1967750b39f81971c7cdcc7c2b052a1de715
 
 GET http://127.0.0.1:8000/get_review
 Content-Type: application/json
-Authorization: Token f25df1958b33fed5fca0f18b828e152d49fc5d77
+Authorization: Token 4a4914e24b338c22543af3ed92cfa1f86af1ce12
 
 {}
 

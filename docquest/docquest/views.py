@@ -961,6 +961,61 @@ def create_moa(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_moa_reviews(request):
+    # Determine the user's role
+    user_roles = request.user.role.values_list('code', flat=True)
+    
+    # Prepare the base query for reviews
+    reviews = Review.objects.filter(
+        content_type=ContentType.objects.get_for_model(MOA),
+        reviewStatus='pending'
+    )
+    
+    # Filter reviews based on user's role
+    if 'ecrd' in user_roles:
+        # Director can see MOAs pending director review
+        reviews = reviews.filter(
+            reviewedByID=request.user, 
+            reviewerResponsible='director'
+        )
+    elif 'vpala' in user_roles:
+        # VPALA can see MOAs pending final review
+        reviews = reviews.filter(
+            reviewedByID=request.user, 
+            reviewerResponsible='vpala'
+        )
+    else:
+        # If user doesn't have review roles, return empty result
+        return Response([], status=status.HTTP_200_OK)
+    
+    # Prepare response data
+    review_data = []
+    for review in reviews:
+        moa = review.source
+        
+        # Try to find associated project
+        try:
+            project = Project.objects.get(moaID=moa)
+            project_info = {
+                'projectID': project.projectID,
+                'projectTitle': project.projectTitle
+            }
+        except Project.DoesNotExist:
+            project_info = None
+        
+        review_data.append({
+            'moaID': moa.moaID,
+            'status': moa.status,
+            'project': project_info,
+            'reviewID': review.reviewID,
+            'reviewStatus': review.reviewStatus,
+            'reviewerResponsible': review.reviewerResponsible
+        })
+    
+    return Response(review_data, status=status.HTTP_200_OK)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def director_review_moa(request, moa_id):
