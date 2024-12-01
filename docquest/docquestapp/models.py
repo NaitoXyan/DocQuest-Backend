@@ -176,8 +176,9 @@ class MOA(models.Model):
 
     moaID = models.AutoField(primary_key=True)
     userID = models.ForeignKey(CustomUser, related_name='moaUser', on_delete=models.CASCADE)
-    partyDescription = models.TextField()
-    # partyBDescription = models.TextField()
+    partyADescription = models.TextField()
+    partyBDescription = models.TextField()
+    partyCDescription = models.TextField(blank=True, null=True)
     coverageAndEffectivity = models.TextField()
     confidentialityClause = models.TextField()
     termination = models.TextField()
@@ -313,6 +314,11 @@ class Review(models.Model):
         ('rejected', 'Rejected'),
     ]
 
+    REVIEW_STAGES = [
+        ('director', 'Director Review'),
+        ('vpala', 'VPALA Final Review'),
+    ]
+
     reviewID = models.AutoField(primary_key=True)
     contentOwnerID = models.ForeignKey(CustomUser, related_name='reviewsContentOwner', on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)  # Refers to the model type (Project, MOA)
@@ -328,6 +334,21 @@ class Review(models.Model):
     # New fields for college-specific reviews
     collegeID = models.ForeignKey('College', on_delete=models.CASCADE, null=True, blank=True)
     sequence = models.PositiveIntegerField(default=0)  # Group all reviewers of a college under the same sequence
+
+    # New field to track review stage
+    review_stage = models.CharField(max_length=10, choices=REVIEW_STAGES, null=True)
+    
+    # Field to track previous review (to enforce sequence)
+    previous_review = models.OneToOneField('self', null=True, blank=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        unique_together = ('content_type', 'source_id', 'review_stage')
+
+    def clean(self):
+        # Ensure review stages are sequential
+        if self.previous_review:
+            if self.previous_review.reviewStatus != 'approved':
+                raise ValidationError("Previous review must be approved before creating next stage review.")
 
 class GoalsAndObjectives(models.Model): #a5
     GAOID = models.AutoField(primary_key=True)

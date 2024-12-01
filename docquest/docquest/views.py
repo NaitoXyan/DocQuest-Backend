@@ -899,7 +899,7 @@ def edit_project(request, project_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_moa(request):
-    # Create a mutable copy of request.data so we can modify it
+    # Create a mutable copy of request.data
     data = request.data.copy()
     
     # Assign the authenticated user as userID
@@ -908,47 +908,226 @@ def create_moa(request):
     serializer = PostMOASerializer(data=data)
 
     if serializer.is_valid():
+        # Save the MOA
         moa = serializer.save(userID=request.user)
 
+        # Generate unique code if not already present
         if moa.dateCreated and not moa.uniqueCode:
             moa.uniqueCode = f"{moa.moaID}-{moa.dateCreated.strftime('%Y%m%d')}"
         moa.save()
 
-        # Link the MOA to the specified Project
+        # Link the MOA to the specified Project (if applicable)
         project_id = data.get('projectID')
         if project_id:
             try:
                 project = Project.objects.get(projectID=project_id)
-                project.moaID = moa  # Assign the MOA instance directly
+                project.moaID = moa
                 project.save()
             except Project.DoesNotExist:
                 return Response({"error": "Project not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        # Get all users with the 'Director' role code
-        reviewer_role_code = 'prch'  # Assuming 'DIR' is the code for the Director role
-        reviewer_users = CustomUser.objects.filter(role__code=reviewer_role_code)
-
-        # Create notification
-        for director in reviewer_users:
-            Notification.objects.create(
-                userID=director,
-                content_type=ContentType.objects.get_for_model(MOA),
-                source_id=moa.moaID,
-                message="MOA has been submitted and requires review."
+        # Find the Director with 'ecrd' role code for initial review
+        try:
+            director = CustomUser.objects.get(role__code='ecrd')
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "No Director found for review."}, 
+                status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Create a review for this MOA
-        if reviewer_users.exists():
-            review = Review.objects.create(
-                contentOwnerID=request.user,
-                content_type=ContentType.objects.get_for_model(MOA),
-                source_id=moa.moaID,
-                reviewedByID=reviewer_users.first(),  # Assigning the first director found
-                reviewStatus='pending',
-            )
+        # Create initial review by Director
+        initial_review = Review.objects.create(
+            contentOwnerID=request.user,
+            content_type=ContentType.objects.get_for_model(MOA),
+            source_id=moa.moaID,
+            reviewedByID=director,
+            reviewStatus='pending',
+            reviewerResponsible='director'  # Explicitly mark as director's review
+        )
 
-        return Response({"message": "MOA submitted for review."}, status=status.HTTP_201_CREATED)
+        # Create Director Notification
+        Notification.objects.create(
+            userID=director,
+            content_type=ContentType.objects.get_for_model(MOA),
+            source_id=moa.moaID,
+            message="New MOA requires your initial review."
+        )
+
+        return Response({
+            "message": "MOA submitted for initial director review.",
+            "moaID": moa.moaID,
+            "uniqueCode": moa.uniqueCode
+        }, status=status.HTTP_201_CREATED)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def director_review_moa(request, moa_id):
+    try:
+        # Verify the user is the Director
+        if not request.user.role.filter(code='ecrd').exists():
+            return Response(
+                {"error": "Unauthorized. Only Director can perform this review."}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Find the MOA and its pending review
+        moa = MOA.objects.get(moaID=moa_id)
+        review = Review.objects.get(
+            source_id=moa_id, 
+            content_type=ContentType.objects.get_for_model(MOA),
+            reviewerResponsible='director',
+            reviewStatus='pending'
+        )
+
+        # Get review decision from request
+        decision = request.data.get('decision')  # 'approved' or 'rejected'
+        comment = request.data.get('comment', '')
+
+        # Update review
+        review.reviewStatus = decision
+        review.comment = comment
+        review.reviewDate = timezone.now()
+        review.save()
+
+        # If approved, prepare for VPALA review
+        if decision == 'approved':
+            # Find VPALA user
+            try:
+                vpala = CustomUser.objects.get(role__code='vpala')
+            except CustomUser.DoesNotExist:
+                return Response(
+                    {"error": "No VPALA found for final review."}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Create VPALA review
+            vpala_review = Review.objects.create(
+                contentOwnerID=moa.userID,
+                content_type=ContentType.objects.get_for_model(MOA),
+                source_id=moa.moaID,
+                reviewedByID=vpala,
+                reviewStatus='pending',
+                reviewerResponsible='vpala'
+            )
+
+            # Create VPALA Notification
+            Notification.objects.create(
+                userID=vpala,
+                content_type=ContentType.objects.get_for_model(MOA),
+                source_id=moa.moaID,
+                message="MOA has passed initial review and requires final approval."
+            )
+
+            return Response({
+                "message": "MOA approved by Director and sent to VPALA for final review.",
+                "status": "director_approved"
+            }, status=status.HTTP_200_OK)
+        else:
+            # If rejected, update MOA status
+            moa.status = 'rejected'
+            moa.save()
+
+            # Notify original user about rejection
+            Notification.objects.create(
+                userID=moa.userID,
+                content_type=ContentType.objects.get_for_model(MOA),
+                source_id=moa.moaID,
+                message="Your MOA has been rejected during initial review."
+            )
+
+            return Response({
+                "message": "MOA rejected by Director.",
+                "status": "director_rejected"
+            }, status=status.HTTP_200_OK)
+
+    except MOA.DoesNotExist:
+        return Response(
+            {"error": "MOA not found."}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+    except Review.DoesNotExist:
+        return Response(
+            {"error": "No pending review found for this MOA."}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+# Similar view can be created for VPALA final approval
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def vpala_final_review_moa(request, moa_id):
+    try:
+        # Verify the user is the VPALA
+        if not request.user.role.filter(code='vpala').exists():
+            return Response(
+                {"error": "Unauthorized. Only VPALA can perform final review."}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Find the MOA and its pending VPALA review
+        moa = MOA.objects.get(moaID=moa_id)
+        review = Review.objects.get(
+            source_id=moa_id, 
+            content_type=ContentType.objects.get_for_model(MOA),
+            reviewerResponsible='vpala',
+            reviewStatus='pending'
+        )
+
+        # Get review decision from request
+        decision = request.data.get('decision')  # 'approved' or 'rejected'
+        comment = request.data.get('comment', '')
+
+        # Update review
+        review.reviewStatus = decision
+        review.comment = comment
+        review.reviewDate = timezone.now()
+        review.save()
+
+        # Update MOA status based on final decision
+        if decision == 'approved':
+            moa.status = 'approved'
+            moa.save()
+
+            # Notify original user about final approval
+            Notification.objects.create(
+                userID=moa.userID,
+                content_type=ContentType.objects.get_for_model(MOA),
+                source_id=moa.moaID,
+                message="Your MOA has been fully approved."
+            )
+
+            return Response({
+                "message": "MOA fully approved by VPALA.",
+                "status": "final_approved"
+            }, status=status.HTTP_200_OK)
+        else:
+            moa.status = 'rejected'
+            moa.save()
+
+            # Notify original user about final rejection
+            Notification.objects.create(
+                userID=moa.userID,
+                content_type=ContentType.objects.get_for_model(MOA),
+                source_id=moa.moaID,
+                message="Your MOA has been rejected during final review."
+            )
+
+            return Response({
+                "message": "MOA rejected during final review.",
+                "status": "final_rejected"
+            }, status=status.HTTP_200_OK)
+
+    except MOA.DoesNotExist:
+        return Response(
+            {"error": "MOA not found."}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+    except Review.DoesNotExist:
+        return Response(
+            {"error": "No pending review found for this MOA."}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
@@ -960,33 +1139,44 @@ def edit_moa(request, moa_id):
 
     serializer = UpdateMOASerializer(instance=moa, data=request.data)
     if serializer.is_valid():
+        # Reset MOA status to pending when edited
+        moa.status = 'pending'
         moa = serializer.save()
 
-        # Get all users with the 'Director' role code
-        reviewer_role_code = 'prch'  # Assuming 'DIR' is the code for the Director role
-        reviewer_users = CustomUser.objects.filter(role__code=reviewer_role_code)
-
-        # Send notification to each director
-        for director in reviewer_users:
-            Notification.objects.create(
-                userID=director,
-                content_type=ContentType.objects.get_for_model(MOA),
-                source_id=moa.moaID,
-                message="MOA has been updated and requires review."
+        # Find the Director with 'ecrd' role code for review
+        try:
+            director = CustomUser.objects.get(role__code='ecrd')
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "No Director found for review."}, 
+                status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Assign a director as the reviewer (assuming one director for the review)
-        if reviewer_users.exists():
-            review = Review.objects.create(
-                contentOwnerID=request.user,
-                content_type=ContentType.objects.get_for_model(MOA),
-                source_id=moa.moaID,
-                reviewedByID=reviewer_users.first(),  # Assigning the first director found
-                reviewStatus='pending',
-                comment="MOA has been edited and is pending approval."
-            )
+        # Create a new review for the edited MOA
+        review = Review.objects.create(
+            contentOwnerID=request.user,
+            content_type=ContentType.objects.get_for_model(MOA),
+            source_id=moa.moaID,
+            reviewedByID=director,
+            reviewStatus='pending',
+            reviewerResponsible='director',
+            comment="MOA has been edited and is pending re-approval."
+        )
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # Create notification for the Director
+        Notification.objects.create(
+            userID=director,
+            content_type=ContentType.objects.get_for_model(MOA),
+            source_id=moa.moaID,
+            message="MOA has been updated and requires review."
+        )
+
+        return Response({
+            "message": "MOA updated and sent for review",
+            "moaID": moa.moaID,
+            "status": moa.status
+        }, status=status.HTTP_200_OK)
+    
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])

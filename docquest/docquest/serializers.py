@@ -270,7 +270,7 @@ class GetSpecificMoaSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = MOA
         fields = [
-            'moaID', 'partyDescription', 'coverageAndEffectivity', 'confidentialityClause',
+            'moaID', 'partyADescription', 'partyBDescription', 'partyCDescription', 'coverageAndEffectivity', 'confidentialityClause',
             'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'witnesses'
         ]
 
@@ -284,7 +284,7 @@ class PostMOASerializer(serializers.ModelSerializer):
     class Meta:
         model = MOA
         fields = [
-            'moaID', 'partyDescription', 'coverageAndEffectivity', 'confidentialityClause',
+            'moaID', 'partyADescription', 'partyBDescription', 'partyCDescription', 'coverageAndEffectivity', 'confidentialityClause',
             'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'witnesses'
         ]
 
@@ -327,7 +327,7 @@ class UpdateMOASerializer(serializers.ModelSerializer):
     class Meta:
         model = MOA
         fields = [
-            'moaID', 'partyDescription', 'coverageAndEffectivity', 'confidentialityClause',
+            'moaID', 'partyADescription', 'partyBDescription', 'partyCDescription', 'coverageAndEffectivity', 'confidentialityClause',
             'termination', 'witnesseth', 'partyObligation', 'firstParty', 'secondParty', 'witnesses'
         ]
     
