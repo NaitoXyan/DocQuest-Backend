@@ -969,22 +969,21 @@ def get_moa_reviews(request):
     
     # Prepare the base query for reviews
     reviews = Review.objects.filter(
-        content_type=ContentType.objects.get_for_model(MOA),
-        reviewStatus='pending'
+        content_type=ContentType.objects.get_for_model(MOA)
     )
     
     # Filter reviews based on user's role
     if 'ecrd' in user_roles:
-        # Director can see MOAs pending director review
+        # Director can see all MOA reviews they are responsible for
         reviews = reviews.filter(
-            reviewedByID=request.user, 
-            reviewerResponsible='director'
+            Q(reviewedByID=request.user) & 
+            Q(reviewerResponsible='director')
         )
     elif 'vpala' in user_roles:
-        # VPALA can see MOAs pending final review
+        # VPALA can see all MOA reviews they are responsible for
         reviews = reviews.filter(
-            reviewedByID=request.user, 
-            reviewerResponsible='vpala'
+            Q(reviewedByID=request.user) & 
+            Q(reviewerResponsible='vpala')
         )
     else:
         # If user doesn't have review roles, return empty result
@@ -999,12 +998,20 @@ def get_moa_reviews(request):
         try:
             project = Project.objects.get(moaID=moa)
             project_info = {
-                
                 'projectID': project.projectID,
                 'projectTitle': project.projectTitle
             }
         except Project.DoesNotExist:
             project_info = None
+        
+        # Get the content owner's first and last name
+        content_owner = review.contentOwnerID
+        content_owner_name = {
+            'firstname': content_owner.firstname,
+            'lastname': content_owner.lastname
+        }
+
+        content_type_name = review.content_type.model
         
         review_data.append({
             'moaID': moa.moaID,
@@ -1013,7 +1020,9 @@ def get_moa_reviews(request):
             'reviewID': review.reviewID,
             'reviewStatus': review.reviewStatus,
             'reviewerResponsible': review.reviewerResponsible,
-            'contentType' : review.content_type
+            'contentOwner': content_owner_name,
+            'contentType' : content_type_name,
+            'dateCreated': moa.dateCreated
         })
     
     return Response(review_data, status=status.HTTP_200_OK)

@@ -65,19 +65,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = "Users"
     
     def save(self, *args, **kwargs):
-        # Check if the user is being assigned the unique role
-        unique_role_code = "ecrd"
-        unique_role = Roles.objects.filter(code=unique_role_code).first()
-        
-        if unique_role and self.pk:  # If the role exists and user instance is being saved
-            if unique_role in self.role.all():  # If the user has the unique role
-                # Check if any other user already has this role
-                conflicting_users = CustomUser.objects.filter(role=unique_role).exclude(userID=self.userID)
-                if conflicting_users.exists():
-                    raise ValidationError(
-                        _("The role 'Director, Extension & Community Relations' with code 'ecrd' is already assigned to another user.")
-                    )
+        unique_role_codes = ["ecrd", "vpala"]  # Codes for unique roles
 
+        for role_code in unique_role_codes:
+            unique_role = Roles.objects.filter(code=role_code).first()
+            if unique_role:  # Ensure the role exists
+                # Check if the user has the unique role
+                if self.pk and unique_role in self.role.all():
+                    # Check for other users with the same role
+                    conflicting_users = CustomUser.objects.filter(role=unique_role).exclude(pk=self.pk)
+                    if conflicting_users.exists():
+                        raise ValidationError(
+                            _(f"The role '{unique_role.name}' with code '{role_code}' is already assigned to another user.")
+                        )
+
+        # Call the parent class's save method
         super().save(*args, **kwargs)
 
     def __str__(self):

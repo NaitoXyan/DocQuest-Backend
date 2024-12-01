@@ -104,8 +104,8 @@ urlpatterns = [
 
     # DIRECTOR AND VPALA
     path('get_moa_reviews', views.get_moa_reviews),
-    path('director_review_moa', views.director_review_moa),
-    path('vpala_final_review_moa', views.vpala_final_review_moa),
+    path('director_review_moa/<int:moa_id>/', views.director_review_moa),
+    path('vpala_final_review_moa/<int:moa_id>/', views.vpala_final_review_moa),
 
     # get address
     path('get_regions', views.get_regions),

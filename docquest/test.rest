@@ -11,23 +11,26 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/auth/token/login/
 Content-Type: application/json
 
-{ "email": "mike@gmail.com", "password": "testpass"}
+{ "email": "vpala@gmail.com", "password": "testpass"}
 
 ###
 
 GET http://127.0.0.1:8000/get_moa_reviews
 Content-Type: application/json
-Authorization: Token 4a4914e24b338c22543af3ed92cfa1f86af1ce12
+Authorization: Token a8ff9ecba53654be165a6efb7df5c4022587dfc2
 
 {}
 
 ###director
 
-GET http://127.0.0.1:8000/director_get_reviews
+POST http://127.0.0.1:8000/director_review_moa/13/
 Content-Type: application/json
-Authorization: Token 4a4914e24b338c22543af3ed92cfa1f86af1ce12
+Authorization: Token e0bb2c75e0fb600db6261b2d4e68d80789232644
 
-{}
+{
+    "decision": "approved",
+    "comment": "Optional review comment"
+}
 
 ###director
 
@@ -529,7 +532,7 @@ Authorization: Token b1a379f6327fafea0a857e63a20a725b0db7b16d
 
 POST http://127.0.0.1:8000/create_moa
 Content-Type: application/json
-Authorization: Token 6d2c0cecb6ecf3449eb2b28ee8f8c7a06336e759
+Authorization: Token 1e933f1699a607fdeb1f6e2fc9f4b42ad77fd056
 
 {
     "projectID": 5,
@@ -568,6 +571,7 @@ Authorization: Token 6d2c0cecb6ecf3449eb2b28ee8f8c7a06336e759
             "title": "Schools Division Superintendent"
         }
     ],
+    "thirdParty": [],
     "witnesses": [
         {
             "name": "DR. ELMER C. CASTILLANO",
@@ -820,8 +824,7 @@ Authorization: Token 66fa1967750b39f81971c7cdcc7c2b052a1de715
 
 GET http://127.0.0.1:8000/get_review
 Content-Type: application/json
-Authorization: Token 4a4914e24b338c22543af3ed92cfa1f86af1ce12
-
+Authorization: Token e0bb2c75e0fb600db6261b2d4e68d80789232644
 {}
 
 ###bsitchair
@@ -844,7 +847,7 @@ Authorization: Token fa217666e813475f2ce3f4113b3aeea25841d9ec
 
 GET http://127.0.0.1:8000/get_review
 Content-Type: application/json
-Authorization: Token ba2d68181619cceeea9c58c5e60e38c36c66685d
+Authorization: Token e0bb2c75e0fb600db6261b2d4e68d80789232644
 
 {}
 
